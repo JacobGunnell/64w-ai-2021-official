@@ -15,6 +15,12 @@
 #ifndef _PROS_MAIN_H_
 #define _PROS_MAIN_H_
 
+#define VERSION_MAJOR 0
+#define VERSION_MINOR 0
+#define VERSION_PATCH 0
+#define VERSION_INFO ""
+#define VERSION_YEAR 2021
+
 /**
  * If defined, some commonly used enums will have preprocessor macros which give
  * a shorter, more convenient naming pattern. If this isn't desired, simply
@@ -34,7 +40,7 @@
  */
 #define PROS_USE_LITERALS
 
-#include "api.h"
+#include "pros/apix.h"
 
 /**
  * You should add more #includes here
@@ -50,7 +56,7 @@
  * concurrently! The okapi namespace will export all symbols inside the pros
  * namespace.
  */
-// using namespace pros;
+using namespace pros;
 // using namespace pros::literals;
 // using namespace okapi;
 
@@ -75,7 +81,8 @@ void opcontrol(void);
 /**
  * You can add C++-only headers here
  */
-//#include <iostream>
+#include <iostream>
+using namespace std;
 #endif
 
 #endif  // _PROS_MAIN_H_
