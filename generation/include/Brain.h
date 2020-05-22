@@ -34,7 +34,7 @@ public:
     mat getB() const { return B; }
     void setB(mat bias) { B = bias; }
 
-    double integrate(mat);
+    mat integrate(mat);
     bool save(string);
     bool load(string);
 

@@ -22,8 +22,8 @@ int main()
 
     Brain brain(WL1, WL2, B);
 
-    rowvec X = {1, 2, 3, 4, 5, 6, 7, 8, 9};
-    cout << brain.integrate(X) << endl;
+    mat X(10000000, 9, fill::randu);
+    mat U = brain.integrate(X);
 
     return 0;
 }

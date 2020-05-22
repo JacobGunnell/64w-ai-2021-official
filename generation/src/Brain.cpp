@@ -24,14 +24,16 @@ Brain::Brain(mat wl1, mat wl2, mat b)
         mat temp = wl1 * wl2; // if this either of these multiplications fail (user has inputted bad data) it will throw
         temp = b * wl2;
     }
-    catch(int)
+    catch(string)
     {
         throw "Bad matrix dimensions for a Brain object.";
     }
 }
 
-double Brain::integrate(mat X)
+mat Brain::integrate(mat X)
 {
-    mat U = (f(X*WL1 + B) * WL2);
-    return U(0,0);
+    mat EB(X.n_rows, B.n_cols, fill::zeros);
+    EB.each_row() += B;
+    mat U = (f(X*WL1 + EB) * WL2);
+    return U;
 }
