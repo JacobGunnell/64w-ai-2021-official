@@ -1,0 +1,47 @@
+# depslib dependency file v1.0
+1590121566 source:c:\users\jacob\documents\codeblocks\64w_generation_1.0\main.cpp
+	<iostream>
+	"include/Brain.h"
+
+1590121622 source:c:\users\jacob\documents\codeblocks\64w_generation_1.0\src\brain.cpp
+	"Brain.h"
+
+1590121146 c:\users\jacob\documents\codeblocks\64w_generation_1.0\include\brain.h
+	"Brain-conf.h"
+	<string>
+	<fstream>
+	"mat.h"
+	<armadillo>
+
+1590102634 c:\users\jacob\documents\codeblocks\64w_generation_1.0\include\brain-conf.h
+
+1590107546 source:c:\users\jacob\documents\codeblocks\64w_generation_1.0\src\mat.cpp
+	"mat.h"
+
+1590119594 c:\users\jacob\documents\codeblocks\64w_generation_1.0\include\mat.h
+	<string>
+	<cstdint>
+
+1590122153 source:c:\users\jacob\documents\prosprograms\64w-ai-rev0-2021\generation\src\brain.cpp
+	"Brain.h"
+
+1590121146 c:\users\jacob\documents\prosprograms\64w-ai-rev0-2021\generation\include\brain.h
+	"Brain-conf.h"
+	<string>
+	<fstream>
+	"mat.h"
+	<armadillo>
+
+1590102634 c:\users\jacob\documents\prosprograms\64w-ai-rev0-2021\generation\include\brain-conf.h
+
+1590119594 c:\users\jacob\documents\prosprograms\64w-ai-rev0-2021\generation\include\mat.h
+	<string>
+	<cstdint>
+
+1590107546 source:c:\users\jacob\documents\prosprograms\64w-ai-rev0-2021\generation\src\mat.cpp
+	"mat.h"
+
+1590122144 source:c:\users\jacob\documents\prosprograms\64w-ai-rev0-2021\generation\main.cpp
+	<iostream>
+	"include/Brain.h"
+
