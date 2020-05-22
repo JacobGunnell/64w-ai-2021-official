@@ -22,14 +22,12 @@
 	<string>
 	<cstdint>
 
-1590123822 source:c:\users\jacob\documents\prosprograms\64w-ai-rev0-2021\generation\src\brain.cpp
+1590163483 source:c:\users\jacob\documents\prosprograms\64w-ai-rev0-2021\generation\src\brain.cpp
 	"Brain.h"
 
-1590123822 c:\users\jacob\documents\prosprograms\64w-ai-rev0-2021\generation\include\brain.h
-	"Brain-conf.h"
+1590164302 c:\users\jacob\documents\prosprograms\64w-ai-rev0-2021\generation\include\brain.h
 	<string>
 	<fstream>
-	"mat.h"
 	<armadillo>
 
 1590102634 c:\users\jacob\documents\prosprograms\64w-ai-rev0-2021\generation\include\brain-conf.h
@@ -41,7 +39,8 @@
 1590107546 source:c:\users\jacob\documents\prosprograms\64w-ai-rev0-2021\generation\src\mat.cpp
 	"mat.h"
 
-1590124540 source:c:\users\jacob\documents\prosprograms\64w-ai-rev0-2021\generation\main.cpp
+1590171730 source:c:\users\jacob\documents\prosprograms\64w-ai-rev0-2021\generation\main.cpp
 	<iostream>
 	"include/Brain.h"
+	<chrono>
 

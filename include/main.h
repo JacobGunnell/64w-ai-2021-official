@@ -41,6 +41,8 @@
 #define PROS_USE_LITERALS
 
 #include "pros/apix.h"
+#include "Brain.h"
+#include "Move.h"
 
 /**
  * You should add more #includes here

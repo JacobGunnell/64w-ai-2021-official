@@ -39,12 +39,9 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
-		<Unit filename="include/Brain-conf.h" />
 		<Unit filename="include/Brain.h" />
-		<Unit filename="include/mat.h" />
 		<Unit filename="main.cpp" />
 		<Unit filename="src/Brain.cpp" />
-		<Unit filename="src/mat.cpp" />
 		<Extensions>
 			<code_completion />
 			<envvars />

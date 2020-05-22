@@ -37,6 +37,34 @@ void disabled() {}
 
 void competition_initialize() {}
 
+void opcontrol()
+{
+	Brain brain(9, 3);
+	brain.load("/usd/brain0.brn");
+	double umax = 0; int umaxidx;
+	Move *possibleMoves;
+	int numPossibleMoves;
+	while(true)
+	{
+		// capture vision data, compute all possible moves
+		possibleMoves = Move::getAllPossibleMoves(); // TODO: implement!
+		numPossibleMoves = Move::numExistentObjects;
+		mat X(numPossibleMoves, 9);
+		// fill x with vision data (maybe make a motor that can spin the depth camera to see all the objects on the field?)
+		mat U = brain.integrate(X);
+		for(int m = 0; m < numPossibleMoves; m++)
+		{
+			if(U(m) > umax)
+			{
+				umax = U(m);
+				umaxidx = m;
+			}
+		}
+		possibleMoves[umaxidx].execute(); // Do the move that the AI thinks is the best strategically
+		delete possibleMoves;
+	}
+}
+
 void autonomous()
 {
   cout << endl << "Entering autonomous" << endl;
