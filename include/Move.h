@@ -2,7 +2,7 @@
 #define MOVE_H
 
 
-#include <armadillo>
+#include "armadillo"
 using namespace arma;
 
 class Move
@@ -15,9 +15,10 @@ public:
   bool execute();
 
   static Move *getAllPossibleMoves();
-  static int numExistentObjects;
+  static mat getAllPossibleMovesMatrix();
+  static int getNumExistentObjects() { return numExistentObjects; }
 private:
-
+  static int numExistentObjects;
 };
 
 #endif // MOVE_H

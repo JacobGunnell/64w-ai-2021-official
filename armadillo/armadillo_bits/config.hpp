@@ -1,11 +1,11 @@
 // Copyright 2008-2016 Conrad Sanderson (http://conradsanderson.id.au)
 // Copyright 2008-2016 National ICT Australia (NICTA)
-// 
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 // http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,14 +16,14 @@
 
 
 #if !defined(ARMA_USE_LAPACK)
-#define ARMA_USE_LAPACK
+//#define ARMA_USE_LAPACK
 //// Comment out the above line if you don't have LAPACK or a high-speed replacement for LAPACK,
 //// such as Intel MKL, AMD ACML, or the Accelerate framework.
 //// LAPACK is required for matrix decompositions (eg. SVD) and matrix inverse.
 #endif
 
 #if !defined(ARMA_USE_BLAS)
-#define ARMA_USE_BLAS
+//#define ARMA_USE_BLAS
 //// Comment out the above line if you don't have BLAS or a high-speed replacement for BLAS,
 //// such as OpenBLAS, GotoBLAS, Intel MKL, AMD ACML, or the Accelerate framework.
 //// BLAS is used for matrix multiplication.
@@ -31,9 +31,9 @@
 #endif
 
 #if !defined(ARMA_USE_NEWARP)
-#define ARMA_USE_NEWARP
+//#define ARMA_USE_NEWARP
 //// Uncomment the above line to enable the built-in partial emulation of ARPACK.
-//// This is used for eigen decompositions of real (non-complex) sparse matrices, eg. eigs_sym(), svds() 
+//// This is used for eigen decompositions of real (non-complex) sparse matrices, eg. eigs_sym(), svds()
 #endif
 
 #if !defined(ARMA_USE_ARPACK)
@@ -106,7 +106,7 @@
 #endif
 
 #if defined(ARMA_USE_CXX11)
-  #define ARMA_USE_CXX11_MUTEX
+  //#define ARMA_USE_CXX11_MUTEX
   //// Comment out the above line to disable use of std::mutex in C++11
 #endif
 
@@ -147,7 +147,7 @@
 #if defined(ARMA_USE_HDF5_ALT) && defined(ARMA_USE_WRAPPER)
   #undef  ARMA_USE_HDF5
   #define ARMA_USE_HDF5
-  
+
   // #define ARMA_HDF5_INCLUDE_DIR /usr/include/
 #endif
 

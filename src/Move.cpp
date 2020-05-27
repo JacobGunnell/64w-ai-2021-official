@@ -28,3 +28,8 @@ Move *Move::getAllPossibleMoves()
   Move *m = new Move[100];
   return m;
 }
+
+mat Move::getAllPossibleMovesMatrix()
+{
+  
+}

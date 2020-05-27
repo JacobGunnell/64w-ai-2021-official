@@ -39,20 +39,15 @@ void competition_initialize() {}
 
 void opcontrol()
 {
-	Brain brain(9, 3);
-	brain.load("/usd/brain0.brn");
+	Brain brain;
+	brain.load(BRAINFILE);
 	double umax = 0; int umaxidx;
 	Move *possibleMoves;
-	int numPossibleMoves;
 	while(true)
 	{
 		// capture vision data, compute all possible moves
-		possibleMoves = Move::getAllPossibleMoves(); // TODO: implement!
-		numPossibleMoves = Move::numExistentObjects;
-		mat X(numPossibleMoves, 9);
-		// fill x with vision data (maybe make a motor that can spin the depth camera to see all the objects on the field?)
-		mat U = brain.integrate(X);
-		for(int m = 0; m < numPossibleMoves; m++)
+		mat U = brain.integrate(Move::getAllPossibleMovesMatrix());
+		for(int m = 0; m < U.n_rows; m++)
 		{
 			if(U(m) > umax)
 			{

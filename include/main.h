@@ -21,6 +21,8 @@
 #define VERSION_INFO ""
 #define VERSION_YEAR 2021
 
+#define BRAINFILE "/usd/brain0"
+
 /**
  * If defined, some commonly used enums will have preprocessor macros which give
  * a shorter, more convenient naming pattern. If this isn't desired, simply

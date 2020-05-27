@@ -16,7 +16,12 @@
 					<Add option="-m64" />
 					<Add option="-g" />
 					<Add directory="include" />
+					<Add directory="C:/Users/jacob/Documents/ProsPrograms/64W-AI-REV0-2021/include" />
+					<Add directory="C:/Users/jacob/Documents/ProsPrograms/64W-AI-REV0-2021/src" />
 				</Compiler>
+				<ResourceCompiler>
+					<Add directory="C:/Users/jacob/Documents/ProsPrograms/64W-AI-REV0-2021/src" />
+				</ResourceCompiler>
 				<Linker>
 					<Add option="-m64" />
 				</Linker>
@@ -25,13 +30,15 @@
 				<Option output="bin/Release/64W_Generation_1" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Release/" />
 				<Option type="1" />
-				<Option compiler="gcc" />
+				<Option compiler="gnu_gcc_compiler_x64" />
 				<Compiler>
-					<Add option="-O2" />
+					<Add option="-m64" />
 					<Add directory="include" />
 				</Compiler>
 				<Linker>
+					<Add option="-O3" />
 					<Add option="-s" />
+					<Add option="-m64" />
 				</Linker>
 			</Target>
 		</Build>
@@ -39,9 +46,7 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
-		<Unit filename="include/Brain.h" />
 		<Unit filename="main.cpp" />
-		<Unit filename="src/Brain.cpp" />
 		<Extensions>
 			<code_completion />
 			<envvars />
