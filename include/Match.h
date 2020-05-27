@@ -11,15 +11,15 @@ using namespace std;
 class Match
 {
 public:
-    Match(Brain *, Brain *);
+  Match(Brain *, Brain *);
 
-    int run();
+  int run();
 
-    int wp, lp;
+  int wp, lp;
 
 private:
-    Brain *red;
-    Brain *blue;
+  Brain *red;
+  Brain *blue;
 };
 
 #endif // MATCH_H

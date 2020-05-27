@@ -17,6 +17,7 @@ public:
   static Move *getAllPossibleMoves();
   static mat getAllPossibleMovesMatrix();
   static int getNumExistentObjects() { return numExistentObjects; }
+  
 private:
   static int numExistentObjects;
 };
