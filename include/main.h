@@ -43,8 +43,8 @@
 #define PROS_USE_LITERALS
 
 #include "pros/apix.h"
-#include "Brain.h"
-#include "Move.h"
+#include "AI.h"
+using namespace ai;
 
 /**
  * You should add more #includes here
