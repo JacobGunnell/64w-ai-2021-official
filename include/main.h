@@ -44,7 +44,6 @@
 
 #include "pros/apix.h"
 #include "AI.h"
-using namespace ai;
 
 /**
  * You should add more #includes here

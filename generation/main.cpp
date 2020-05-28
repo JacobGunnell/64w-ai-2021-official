@@ -4,8 +4,7 @@
 #include <ctime>
 using namespace std;
 
-#include "Brain.h"
-#include "Match.h"
+#include "AI.h"
 
 
 //#define GENERATION_BENCHMARK 10000000
@@ -123,7 +122,9 @@ int main()
   return 0;
 }
 
-// this is sort of a hack but it's the only way i could get the linker to link the implementation files without creating a library
+// this is sort of a hack but it's the only way i could get the linker to link the implementation files without creating a library; probably will create one in the future and make it a PROS library template
+#include "../src/GameObject.cpp"
+#include "../src/SensorWrapper.cpp"
+#include "../src/Move.cpp"
 #include "../src/Brain.cpp"
 #include "../src/Match.cpp"
-#include "../src/Move.cpp"

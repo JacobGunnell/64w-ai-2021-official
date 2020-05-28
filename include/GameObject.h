@@ -2,7 +2,7 @@
 #define GAMEOBJECT_H
 
 
-enum ObjectType
+enum ObjectType {BALL, ROBOT};
 
 class GameObject
 {
