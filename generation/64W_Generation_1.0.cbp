@@ -2,7 +2,7 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="64W_Generation_1.0" />
+		<Option title="64W_Generation" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>

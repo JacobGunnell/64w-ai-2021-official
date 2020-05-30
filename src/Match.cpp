@@ -15,3 +15,9 @@ int Match::run()
   lp = 4;
   return rand()%2;
 }
+
+void Match::reset()
+{
+  wp = 0;
+  lp = 0;
+}

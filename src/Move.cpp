@@ -1,15 +1,15 @@
 #include "Move.h"
 
-int Move::numExistentObjects = 0;
+int Move::numExistentMoves = 0;
 
 Move::Move()
 {
-  numExistentObjects++;
+  numExistentMoves++;
 }
 
 Move::~Move()
 {
-  numExistentObjects--;
+  numExistentMoves--;
 }
 
 colvec Move::vectorize()
@@ -31,5 +31,5 @@ Move *Move::getAllPossibleMoves()
 
 mat Move::getAllPossibleMovesMatrix()
 {
-  
+
 }

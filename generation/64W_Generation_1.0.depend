@@ -39,17 +39,18 @@
 1590107546 source:c:\users\jacob\documents\prosprograms\64w-ai-rev0-2021\generation\src\mat.cpp
 	"mat.h"
 
-1590598940 source:c:\users\jacob\documents\prosprograms\64w-ai-rev0-2021\generation\main.cpp
+1590771503 source:c:\users\jacob\documents\prosprograms\64w-ai-rev0-2021\generation\main.cpp
 	<iostream>
 	<list>
 	<random>
 	<ctime>
-	"Brain.h"
-	"Match.h"
+	"AI.h"
 	<chrono>
+	"../src/GameObject.cpp"
+	"../src/SensorWrapper.cpp"
+	"../src/Move.cpp"
 	"../src/Brain.cpp"
 	"../src/Match.cpp"
-	"../src/Move.cpp"
 
 1590448369 source:c:\users\jacob\documents\prosprograms\64w-ai-rev0-2021\generation\src\match.cpp
 	"Match.h"
@@ -1845,25 +1846,44 @@
 
 1466097661 c:\users\jacob\documents\prosprograms\64w-ai-rev0-2021\include\armadillo_bits\compiler_setup_post.hpp
 
-1590536969 c:\users\jacob\documents\prosprograms\64w-ai-rev0-2021\include\brain.h
+1590620136 c:\users\jacob\documents\prosprograms\64w-ai-rev0-2021\include\brain.h
 	<string>
 	<fstream>
-	<armadillo>
+	"armadillo"
 
-1590536969 c:\users\jacob\documents\prosprograms\64w-ai-rev0-2021\include\match.h
+1590765031 c:\users\jacob\documents\prosprograms\64w-ai-rev0-2021\include\match.h
 	"Brain.h"
+	"GameObject.h"
 	<random>
 	<ctime>
 
-1590536976 c:\users\jacob\documents\prosprograms\64w-ai-rev0-2021\src\brain.cpp
+1590620171 c:\users\jacob\documents\prosprograms\64w-ai-rev0-2021\src\brain.cpp
 	"Brain.h"
 
-1590536976 c:\users\jacob\documents\prosprograms\64w-ai-rev0-2021\src\match.cpp
+1590764913 c:\users\jacob\documents\prosprograms\64w-ai-rev0-2021\src\match.cpp
 	"Match.h"
 
-1590168819 c:\users\jacob\documents\prosprograms\64w-ai-rev0-2021\src\move.cpp
+1590770525 c:\users\jacob\documents\prosprograms\64w-ai-rev0-2021\src\move.cpp
 	"Move.h"
 
-1590534896 c:\users\jacob\documents\prosprograms\64w-ai-rev0-2021\include\move.h
-	<armadillo>
+1590765872 c:\users\jacob\documents\prosprograms\64w-ai-rev0-2021\include\move.h
+	"armadillo"
+
+1590694713 c:\users\jacob\documents\prosprograms\64w-ai-rev0-2021\include\ai.h
+	"GameObject.h"
+	"SensorWrapper.h"
+	"Move.h"
+	"Brain.h"
+	"Match.h"
+
+1590765640 c:\users\jacob\documents\prosprograms\64w-ai-rev0-2021\include\gameobject.h
+	<cmath>
+
+1590678889 c:\users\jacob\documents\prosprograms\64w-ai-rev0-2021\include\sensorwrapper.h
+
+1590765569 c:\users\jacob\documents\prosprograms\64w-ai-rev0-2021\src\gameobject.cpp
+	"GameObject.h"
+
+1590678614 c:\users\jacob\documents\prosprograms\64w-ai-rev0-2021\src\sensorwrapper.cpp
+	"SensorWrapper.h"
 

@@ -3,6 +3,7 @@
 
 
 #include "Brain.h"
+#include "GameObject.h"
 
 #include <random>
 #include <ctime>
@@ -12,8 +13,16 @@ class Match
 {
 public:
   Match(Brain *, Brain *);
+  Match() : Match(NULL, NULL) {}
+
+  void setRed(Brain *r) { if(r != NULL) red = r; }
+  Brain *getRed() const { return red; }
+  void setBlue(Brain *b) { if(b != NULL) blue = b; }
+  Brain *getBlue() const { return blue; }
+  void setContestants(Brain *r, Brain *b) { setRed(r); setBlue(b); }
 
   int run();
+  void reset();
 
   int wp, lp;
 

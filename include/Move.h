@@ -16,10 +16,10 @@ public:
 
   static Move *getAllPossibleMoves();
   static mat getAllPossibleMovesMatrix();
-  static int getNumExistentObjects() { return numExistentObjects; }
-  
+  static int getNumExistentMoves() { return numExistentMoves; }
+
 private:
-  static int numExistentObjects;
+  static int numExistentMoves;
 };
 
 #endif // MOVE_H
