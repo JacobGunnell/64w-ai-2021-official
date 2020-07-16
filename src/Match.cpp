@@ -6,6 +6,7 @@ Match::Match(Brain *redBrain, Brain *blueBrain)
   blue = blueBrain;
   wp = 0;
   lp = 0;
+  field = GameObject::defaultField();
 }
 
 int Match::run()

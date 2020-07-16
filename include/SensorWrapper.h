@@ -7,7 +7,7 @@ class SensorWrapper
 public:
   SensorWrapper();
 
-  
+
 
 private:
 

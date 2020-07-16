@@ -29,6 +29,7 @@ public:
 private:
   Brain *red;
   Brain *blue;
+  GameObject **field;
 };
 
 #endif // MATCH_H
