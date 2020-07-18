@@ -4,25 +4,15 @@
 
 #include <cmath>
 
-class Ball;
-class Goal;
-class Robot;
-
 class GameObject
 {
 public:
   GameObject(double xCoord, double yCoord) : x(xCoord), y(yCoord) {}
 
-  double distFrom(int, int);
+  double distFrom(int xCoord, int yCoord) { return sqrt((x - xCoord)*(x - xCoord) + (y - yCoord)*(y - yCoord)); }
   double distFrom(GameObject g) { return distFrom(g.x, g.y); }
-
-  static GameObject **defaultField();
 
   double x, y; // cartesian coords in inches, with (0,0) as the middle of the field
 };
-
-#include "Ball.h"
-#include "Goal.h"
-#include "Robot.h"
 
 #endif // GAMEOBJECT_H

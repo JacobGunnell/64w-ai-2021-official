@@ -46,7 +46,8 @@ void opcontrol()
 	while(true)
 	{
 		// capture vision data, compute all possible moves
-		mat U = brain.integrate(Move::getAllPossibleMovesMatrix());
+		SensorWrapper s; // TODO: implement constructor to interface with Sensor Fusion API
+		mat U = brain.integrate(Move::getAllPossibleMovesMatrix(s));
 		for(int m = 0; m < U.n_rows; m++)
 		{
 			if(U(m) > umax)

@@ -4,6 +4,7 @@
 
 #include "armadillo"
 using namespace arma;
+#include "SensorWrapper.h"
 
 class Move
 {
@@ -14,8 +15,8 @@ public:
   colvec vectorize();
   bool execute();
 
-  static Move *getAllPossibleMoves();
-  static mat getAllPossibleMovesMatrix();
+  static Move *getAllPossibleMoves(SensorWrapper);
+  static mat getAllPossibleMovesMatrix(SensorWrapper);
   static int getNumExistentMoves() { return numExistentMoves; }
 
 private:

@@ -3,7 +3,11 @@
 
 
 #include "Brain.h"
+
 #include "GameObject.h"
+#include "Robot.h"
+#include "Ball.h"
+#include "Goal.h"
 
 #include <random>
 #include <ctime>
@@ -21,8 +25,11 @@ public:
   Brain *getBlue() const { return blue; }
   void setContestants(Brain *r, Brain *b) { setRed(r); setBlue(b); }
 
-  int run();
+  Alliance run();
+  int score(Alliance);
   void reset();
+
+  static GameObject **defaultField();
 
   int wp, lp;
 

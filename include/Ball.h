@@ -4,7 +4,7 @@
 
 #include "GameObject.h"
 
-enum Color {RED, BLUE};
+enum Color {RED=0, BLUE=1};
 
 class Ball : public GameObject
 {

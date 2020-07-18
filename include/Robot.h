@@ -4,7 +4,9 @@
 
 #include "Container.h"
 
-enum Alliance {RED_ALLIANCE, BLUE_ALLIANCE};
+class SensorWrapper;
+
+enum Alliance {RED_ALLIANCE=0, BLUE_ALLIANCE=1};
 
 class Robot : public Container
 {
@@ -16,11 +18,15 @@ public:
   void moveTo(double x_, double y_, double h_) { x = x_; y = y_; heading = h_; }
   void moveTo(double x_, double y_) { x = x_; y = y_; }
 
+  SensorWrapper getViewableWrapper(GameObject **);
+
   double heading;
 
 private:
   Alliance _alliance;
   double _fov;
 };
+
+#include "SensorWrapper.h"
 
 #endif // ROBOT_H
