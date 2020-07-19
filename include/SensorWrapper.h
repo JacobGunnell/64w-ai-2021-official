@@ -10,7 +10,7 @@
 class SensorWrapper
 {
 public:
-  SensorWrapper() {}
+  SensorWrapper(GameObject **objs_, int numObjs_) : objs(objs_), numObjs(numObjs_) {}
   // TODO: create new constructor for Sensor Fusion API
   // SensorWrapper(FusionSnapshot *);
 
@@ -20,8 +20,6 @@ public:
 private:
   GameObject **objs;
   int numObjs;
-
-  friend SensorWrapper Robot::getViewableWrapper(GameObject **);
 };
 
 #endif // SENSOR_WRAPPER_H

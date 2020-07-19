@@ -3,7 +3,6 @@
 SensorWrapper Robot::getViewableWrapper(GameObject **field)
 {
   GameObject **visible = NULL; // TODO: implement
-  SensorWrapper s;
-  s.objs = visible;
+  SensorWrapper s(visible, 0);
   return s;
 }

@@ -39,5 +39,6 @@ mat Move::getAllPossibleMovesMatrix(SensorWrapper data)
   mat matrix;
   for(int i = 0; i < after - before; i++)
     matrix.insert_cols(i, m[i].vectorize());
+  delete m;
   return matrix;
 }

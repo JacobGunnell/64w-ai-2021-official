@@ -95,7 +95,6 @@ int main()
 }
 
 // tell the linker to link the implementation files without creating a library; probably will create one in the future and make it a PROS library template
-#include "../src/GameObject.cpp"
 #include "../src/SensorWrapper.cpp"
 #include "../src/Move.cpp"
 #include "../src/Brain.cpp"
