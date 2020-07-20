@@ -16,6 +16,7 @@ public:
   Goal(double xcoord, double ycoord) : Container(xcoord, ycoord, 3) {}
 
   Ball *top() { if(balls.size() > 0) return balls.back(); return NULL; }
+  int numBalls(Color);
 };
 
 #endif // GOAL_H

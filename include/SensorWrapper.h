@@ -13,6 +13,7 @@ public:
   SensorWrapper(GameObject **objs_, int numObjs_) : objs(objs_), numObjs(numObjs_) {}
   // TODO: create new constructor for Sensor Fusion API
   // SensorWrapper(FusionSnapshot *);
+  ~SensorWrapper() { delete objs; }
 
   GameObject **getObjs() const { return objs; }
   int getNumObjs() const { return numObjs; }

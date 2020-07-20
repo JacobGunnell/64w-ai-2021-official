@@ -29,14 +29,21 @@ public:
   int score(Alliance);
   void reset();
 
-  static GameObject **defaultField();
-
   int wp, lp;
 
 private:
   Brain *red;
   Brain *blue;
   GameObject **field;
+
+  static GameObject **defaultField();
+  static const int defaultFieldSize;
+  static Goal **getGoals(GameObject **f) { return reinterpret_cast<Goal **>(f); }
+  static const int numGoals;
+  static Robot **getRobots(GameObject **f) { return reinterpret_cast<Robot **>(f + numGoals); }
+  static const int numRobots;
+  static Ball **getBalls(GameObject **f) { return reinterpret_cast<Ball **>(f + numGoals + numRobots); }
+  static const int numBalls;
 };
 
 #endif // MATCH_H
