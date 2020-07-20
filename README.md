@@ -9,5 +9,5 @@ Our team's challenge this year is to create two robots capable of playing *Chang
 
 **How can I support this team?**
 
-We have a GoFundMe!  Our school cannot afford the registration fee for this year.  Any donation would be appreciated.
+We have a GoFundMe!  Our school cannot afford the registration fee for this year by ourselves.  Any donation would be appreciated.
 https://gf.me/u/x9bc2x
