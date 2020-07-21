@@ -33,7 +33,7 @@ Brain::Brain(mat wl1, mat wl2, mat b) // create a brain from matrices
 
 Brain::Brain(Brain *mother, Brain *father) // breed a brain from a mother and a father
 {
-
+  // TODO
 }
 
 mat Brain::integrate(mat X)
@@ -62,5 +62,5 @@ bool Brain::load(string filename)
 
 void Brain::mutate()
 {
-
+  // TODO
 }

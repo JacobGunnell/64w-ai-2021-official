@@ -3,9 +3,6 @@
 
 
 #include "GameObject.h"
-#include "Ball.h"
-#include "Goal.h"
-#include "Robot.h"
 
 class SensorWrapper
 {

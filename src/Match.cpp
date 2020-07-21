@@ -2,7 +2,9 @@
 
 const int Match::defaultFieldSize = 45;
 const int Match::numGoals = 9;
-const int Match::numRobots = 4;
+const int Match::numRedRobots = 2;
+const int Match::numBlueRobots = 2;
+const int Match::numRobots = Match::numRedRobots + Match::numBlueRobots;
 const int Match::numBalls = 32;
 
 Match::Match(Brain *redBrain, Brain *blueBrain)
@@ -102,6 +104,15 @@ GameObject **Match::defaultField()
     static_cast<Ball *>(balls[bidx++] = new Ball{BLUE}),
     static_cast<Ball *>(balls[bidx++] = new Ball{RED})};
 
+  // Robots / Preloads
+  robots[ridx++] = new Robot{-60, 36, 90, 4, RED_ALLIANCE, 50,
+    static_cast<Ball *>(balls[bidx++] = new Ball{RED})};
+  robots[ridx++] = new Robot{-60, -36, 90, 4, RED_ALLIANCE, 50,
+    static_cast<Ball *>(balls[bidx++] = new Ball{RED})};
+  robots[ridx++] = new Robot{60, 36, -90, 4, BLUE_ALLIANCE, 50,
+    static_cast<Ball *>(balls[bidx++] = new Ball{BLUE})};
+  robots[ridx++] = new Robot{60, -36, -90, 4, BLUE_ALLIANCE, 50,
+    static_cast<Ball *>(balls[bidx++] = new Ball{BLUE})};
 
   // Balls on field
   balls[bidx++] = new Ball{0, 8.799, RED};
@@ -114,16 +125,6 @@ GameObject **Match::defaultField()
   balls[bidx++] = new Ball{60, -60, BLUE};
   balls[bidx++] = new Ball{-60, 60, RED};
   balls[bidx++] = new Ball{-60, -60, RED};
-
-  // Robots / Preloads
-  robots[ridx++] = new Robot{-60, 36, 90, 4, RED_ALLIANCE, 50,
-    static_cast<Ball *>(balls[bidx++] = new Ball{RED})};
-  robots[ridx++] = new Robot{-60, -36, 90, 4, RED_ALLIANCE, 50,
-    static_cast<Ball *>(balls[bidx++] = new Ball{RED})};
-  robots[ridx++] = new Robot{60, 36, -90, 4, BLUE_ALLIANCE, 50,
-    static_cast<Ball *>(balls[bidx++] = new Ball{BLUE})};
-  robots[ridx++] = new Robot{60, -36, -90, 4, BLUE_ALLIANCE, 50,
-    static_cast<Ball *>(balls[bidx++] = new Ball{BLUE})};
 
   return field;
 }

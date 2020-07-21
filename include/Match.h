@@ -42,6 +42,10 @@ private:
   static const int numGoals;
   static Robot **getRobots(GameObject **f) { return reinterpret_cast<Robot **>(f + numGoals); }
   static const int numRobots;
+  static Robot **getRedRobots(GameObject **f) { return reinterpret_cast<Robot **>(f + numGoals); }
+  static const int numRedRobots;
+  static Robot **getBlueRobots(GameObject **f) { return reinterpret_cast<Robot **>(f + numGoals + numRedRobots); }
+  static const int numBlueRobots;
   static Ball **getBalls(GameObject **f) { return reinterpret_cast<Ball **>(f + numGoals + numRobots); }
   static const int numBalls;
 };

@@ -3,8 +3,9 @@
 
 
 #include "Container.h"
-
-class SensorWrapper;
+#include "SensorWrapper.h"
+#include "cmath"
+#define PI 3.14159265
 
 enum Alliance {RED_ALLIANCE=0, BLUE_ALLIANCE=1};
 
@@ -18,7 +19,7 @@ public:
   void moveTo(double x_, double y_, double h_) { x = x_; y = y_; heading = h_; }
   void moveTo(double x_, double y_) { x = x_; y = y_; }
 
-  SensorWrapper getViewableWrapper(GameObject **);
+  SensorWrapper getViewableWrapper(GameObject **, const int);
 
   double heading;
 
@@ -26,7 +27,5 @@ private:
   Alliance _alliance;
   double _fov;
 };
-
-#include "SensorWrapper.h"
 
 #endif // ROBOT_H

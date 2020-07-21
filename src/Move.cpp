@@ -15,13 +15,13 @@ Move::~Move()
 colvec Move::vectorize()
 {
   double P, T, S;
-  // compute values
+  // TODO: compute values
   return colvec{P, T, S};
 }
 
 bool Move::execute()
 {
-
+  // TODO
 }
 
 Move *Move::getAllPossibleMoves(SensorWrapper data)
