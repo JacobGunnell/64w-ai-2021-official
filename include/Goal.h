@@ -15,7 +15,8 @@ public:
   Goal(double xcoord, double ycoord, Ball *b1) : Container(xcoord, ycoord, 3) { balls.push_back(b1); }
   Goal(double xcoord, double ycoord) : Container(xcoord, ycoord, 3) {}
 
-  Ball *top() { if(balls.size() > 0) return balls.back(); return NULL; }
+  Ball *top() { if(!balls.empty()) return balls.back(); else return NULL; }
+  Color topColor() { if(top() != NULL) return top()->getColor(); else return NONE; }
   int numBalls(Color);
 };
 

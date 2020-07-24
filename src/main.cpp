@@ -42,13 +42,17 @@ void opcontrol()
 	Brain brain;
 	brain.load(BRAINFILE);
 	double umax = 0; int umaxidx;
-	Move *possibleMoves;
+	Move **possibleMoves;
+	int len;
 	while(true)
 	{
 		// capture vision data, compute all possible moves
 		SensorWrapper s(NULL, 0); // TODO: implement constructor to interface with Sensor Fusion API
-		mat U = brain.integrate(Move::getAllPossibleMovesMatrix(s));
-		for(int m = 0; m < U.n_rows; m++)
+		len = Move::getNumExistentMoves();
+		possibleMoves = Move::getAllPossibleMoves(s);
+		len = Move::getNumExistentMoves() - len;
+		mat U = brain.integrate(Move::getAllPossibleMovesMatrix(possibleMoves, len));
+		for(int m = 0; m < len; m++)
 		{
 			if(U(m) > umax)
 			{
@@ -56,7 +60,7 @@ void opcontrol()
 				umaxidx = m;
 			}
 		}
-		possibleMoves[umaxidx].execute(); // Do the move that the AI thinks is the best strategically
+		possibleMoves[umaxidx]->execute(); // Do the move that the AI thinks is the best strategically
 		delete possibleMoves;
 	}
 }

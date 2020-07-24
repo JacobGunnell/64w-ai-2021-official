@@ -18,7 +18,7 @@ Match::Match(Brain *redBrain, Brain *blueBrain)
 
 Alliance Match::run()
 {
-  // simulate a match
+  // TODO: simulate a match
   int red = score(RED_ALLIANCE);
   int blue = score(BLUE_ALLIANCE);
   if(red > blue)
@@ -53,9 +53,9 @@ int Match::score(Alliance a)
                                      {0, 4, 8},
                                      {2, 4, 6}};
   for(int i = 0; i < 8; i++)
-    if(goals[connectableRowIndices[i][0]]->top()->getColor() == c &&
-    goals[connectableRowIndices[i][1]]->top()->getColor() == c &&
-    goals[connectableRowIndices[i][2]]->top()->getColor() == c)
+    if(goals[connectableRowIndices[i][0]]->topColor() == c &&
+    goals[connectableRowIndices[i][1]]->topColor() == c &&
+    goals[connectableRowIndices[i][2]]->topColor() == c)
       score += 6; // 6 points for each Connected Row
 
   return score;
@@ -65,6 +65,9 @@ void Match::reset()
 {
   wp = 0;
   lp = 0;
+  for(int i = 0; i < defaultFieldSize; i++)
+    delete field[i];
+  delete [] field;
 }
 
 GameObject **Match::defaultField()
