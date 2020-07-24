@@ -4,13 +4,14 @@
 	<Project>
 		<Option title="64W_Generation" />
 		<Option pch_mode="2" />
-		<Option compiler="gcc" />
+		<Option compiler="gnu_gcc_compiler_x64" />
 		<Build>
 			<Target title="Debug">
 				<Option output="bin/Debug/64W_Generation_1" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gnu_gcc_compiler_x64" />
+				<Option parameters="-g 10 -o elite" />
 				<Compiler>
 					<Add option="-std=c++14" />
 					<Add option="-m64" />
@@ -23,6 +24,9 @@
 					<Add directory="C:/Users/jacob/Documents/ProsPrograms/64W-AI-REV0-2021/src" />
 				</ResourceCompiler>
 				<Linker>
+					<Add option="-static-libstdc++" />
+					<Add option="-static-libgcc" />
+					<Add option="-static" />
 					<Add option="-m64" />
 				</Linker>
 			</Target>
@@ -38,14 +42,24 @@
 				<Linker>
 					<Add option="-O3" />
 					<Add option="-s" />
+					<Add option="-static-libstdc++" />
+					<Add option="-static-libgcc" />
+					<Add option="-static" />
 					<Add option="-m64" />
 				</Linker>
 			</Target>
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
+			<Add option="-m64" />
 			<Add option="-fexceptions" />
 		</Compiler>
+		<Linker>
+			<Add option="-static-libstdc++" />
+			<Add option="-static-libgcc" />
+			<Add option="-static" />
+			<Add option="-m64" />
+		</Linker>
 		<Unit filename="main.cpp" />
 		<Extensions>
 			<code_completion />

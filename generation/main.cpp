@@ -16,13 +16,19 @@ int main(int argc, char **argv)
 {
   CLI::App app{"Generation, a program to breed a competent AI brain using an evolutional framework."};
   int POPULATION = 32, ELITE = 4, MUTATION_CHANCE = 20, GEN_MAX;
+  string FPATH;
   app.add_option("-p", POPULATION, "Initial Population", true)->check([](const string &str){ if(ceil(log2(stoi(str))) != floor(log2(stoi(str)))) return str + string(" is not a power of 2"); else return string(); });
   app.add_option("-e", ELITE, "Elite Population", true)->check([](const string &str){ if(ceil(log2(stoi(str))) != floor(log2(stoi(str)))) return str + string(" is not a power of 2"); else return string(); });
   app.add_option("-m", MUTATION_CHANCE, "Mutation Chance", true)->check(CLI::Range(0, 100));
-  app.add_option("-g", GEN_MAX, "Number of Generations to run", true)->required();
+  app.add_option("-g", GEN_MAX, "Number of Generations to run")->required();
+  app.add_option("-o", FPATH, "Directory to save to")->check(CLI::ExistingDirectory);
   CLI11_PARSE(app, argc, argv);
   cout << "64W Generation v1.0" << endl
-       << "Starting " << GEN_MAX << " generation run with initial population " << POPULATION << "..." << endl;
+       << "Starting " << GEN_MAX << " generation run with initial population " << POPULATION;
+  if(FPATH.empty())
+    cout << " (no save specified!)..." << endl;
+  else
+    cout << "..." << endl;
 
   // Seed random number generators
   srand(time(0));
@@ -78,30 +84,34 @@ int main(int argc, char **argv)
       }
     }
 
-    // Save this generation's elite to file
-    int n = 0;
-    string fpath = "elite/";
-    for(list<Brain>::iterator i = cGen.begin(); i != cGen.end(); ++i)
-      i->save(fpath + to_string(gen) + "gen" + to_string(n++));
-
-
-    // Elite get to breed the next generation
-    cout << " breeding...";
-    while(cGen.size() < POPULATION)
+    if(gen == GEN_MAX - 1 && !FPATH.empty())
     {
-      mother = cGen.begin();
-      father = cGen.begin();
-      midx = rand()%ELITE; // pick a mother and a father that are not the same
-      do
+      // Save elite to file
+      cout << " saving  ...";
+      list<Brain>::iterator iter = cGen.begin();
+      for(int i = 0; i < cGen.size(); i++)
+        iter++->save(FPATH + "/brain" + to_string(i));
+    }
+    else
+    {
+      // Elite get to breed the next generation
+      cout << " breeding...";
+      while(cGen.size() < POPULATION)
       {
-        fidx = rand()%ELITE;
+        mother = cGen.begin();
+        father = cGen.begin();
+        midx = rand()%ELITE; // pick a mother and a father that are not the same
+        do
+        {
+          fidx = rand()%ELITE;
+        }
+        while(midx == fidx);
+        advance(mother, midx);
+        advance(father, fidx);
+        cGen.emplace_back(&*mother, &*father); // make a child
+        if(rand()%100 < MUTATION_CHANCE) // decide whether the child should be mutant
+          cGen.back().mutate();
       }
-      while(midx == fidx);
-      advance(mother, midx);
-      advance(father, fidx);
-      cGen.emplace_back(Brain(&*mother, &*father)); // make a child
-      if(rand()%100 < MUTATION_CHANCE) // decide whether the child should be mutant
-        (--cGen.end())->mutate();
     }
 
     high_resolution_clock::time_point stop = high_resolution_clock::now();
