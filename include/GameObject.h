@@ -9,6 +9,8 @@ class GameObject
 public:
   GameObject(double xCoord, double yCoord) : x(xCoord), y(yCoord) {}
 
+  virtual GameObject *clone() { return new GameObject(*this); }
+
   double distFrom(int xCoord, int yCoord) { return sqrt((x - xCoord)*(x - xCoord) + (y - yCoord)*(y - yCoord)); }
   double distFrom(GameObject g) { return distFrom(g.x, g.y); }
 

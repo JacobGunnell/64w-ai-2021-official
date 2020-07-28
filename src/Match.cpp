@@ -1,36 +1,73 @@
 #include "Match.h"
 
-const int Match::defaultFieldSize = 45;
 const int Match::numGoals = 9;
-const int Match::numRedRobots = 2;
-const int Match::numBlueRobots = 2;
+const int Match::numRedRobots = 1; // TODO: implement 2 on 2
+const int Match::numBlueRobots = 1;
 const int Match::numRobots = Match::numRedRobots + Match::numBlueRobots;
 const int Match::numBalls = 32;
+const int Match::defaultFieldSize = numGoals + numRobots + numBalls;
 
 Match::Match(Brain *redBrain, Brain *blueBrain)
 {
-  red = redBrain;
-  blue = blueBrain;
+  red = new Brain(*redBrain);
+  blue = new Brain(*blueBrain);
   wp = 0;
   lp = 0;
   field = defaultField();
+  fieldSize = defaultFieldSize;
+}
+
+Match::Match(const Match &cpy)
+{
+  red = new Brain(*cpy.red);
+  blue = new Brain(*cpy.blue);
+  wp = cpy.wp;
+  lp = cpy.lp;
+  field = new GameObject*[cpy.fieldSize];
+  for(int i = 0; i < cpy.fieldSize; i++)
+    field[i] = cpy.field[i]->clone();
+}
+
+Match::~Match()
+{
+  delete red;
+  delete blue;
+  for(int i = 0; i < defaultFieldSize; i++)
+    delete field[i];
+  delete [] field;
 }
 
 Alliance Match::run()
 {
   // TODO: simulate a match
-  int red = score(RED_ALLIANCE);
-  int blue = score(BLUE_ALLIANCE);
-  if(red > blue)
+  Robot **redrobots = getRedRobots(field);
+  Robot **bluerobots = getBlueRobots(field);
+  double redtime = 120.0;
+  double bluetime = 120.0;
+  while(redtime > 0 && bluetime > 0)
   {
-    wp = red;
-    lp = blue;
+    while(redtime >= bluetime)
+    {
+      makemove(redrobots, red);
+    }
+    while(bluetime >= redtime)
+    {
+      makemove(bluerobots, blue);
+    }
+  }
+
+  int pred = score(RED_ALLIANCE);
+  int pblue = score(BLUE_ALLIANCE);
+  if(pred > pblue)
+  {
+    wp = pred;
+    lp = pblue;
     return RED_ALLIANCE;
   }
   else
   {
-    wp = blue;
-    lp = red;
+    wp = pblue;
+    lp = pred;
     return BLUE_ALLIANCE;
   }
 }
@@ -68,6 +105,29 @@ void Match::reset()
   for(int i = 0; i < defaultFieldSize; i++)
     delete field[i];
   delete [] field;
+}
+
+void Match::makemove(Robot **bots, Brain *brn)
+{
+  double umax = 0; int umaxidx;
+	Move **possibleMoves;
+	int len;
+  len = Move::getNumExistentMoves();
+  possibleMoves = Move::getAllPossibleMoves(bots[0]->getViewableWrapper(field, defaultFieldSize));
+  len = Move::getNumExistentMoves() - len;
+  mat U = brn->integrate(Move::getAllPossibleMovesMatrix(possibleMoves, len));
+  for(int m = 0; m < len; m++)
+  {
+    if(U(m) > umax)
+    {
+      umax = U(m);
+      umaxidx = m;
+    }
+  }
+  possibleMoves[umaxidx]->vexecute(bots[0]); // TODO: implement did-this-move-work?
+  for(int i = 0; i < len; i++)
+    delete possibleMoves[i];
+  delete [] possibleMoves;
 }
 
 GameObject **Match::defaultField()

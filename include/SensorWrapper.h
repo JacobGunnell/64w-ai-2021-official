@@ -7,13 +7,16 @@
 class SensorWrapper
 {
 public:
-  SensorWrapper(GameObject **objs_, int numObjs_) : objs(objs_), numObjs(numObjs_) {}
+  SensorWrapper(GameObject **, int);
+  SensorWrapper(const SensorWrapper &);
   // TODO: create new constructor for Sensor Fusion API
   // SensorWrapper(FusionSnapshot *);
-  ~SensorWrapper() { delete objs; }
+  ~SensorWrapper();
 
   GameObject **getObjs() const { return objs; }
   int getNumObjs() const { return numObjs; }
+
+  SensorWrapper operator+(SensorWrapper);
 
 private:
   GameObject **objs;

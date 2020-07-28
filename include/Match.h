@@ -13,11 +13,16 @@
 #include <ctime>
 using namespace std;
 
+#include "armadillo"
+using namespace arma;
+
 class Match
 {
 public:
   Match(Brain *, Brain *);
+  Match(const Match &);
   Match() : Match(NULL, NULL) {}
+  ~Match();
 
   void setRed(Brain *r) { if(r != NULL) red = r; }
   Brain *getRed() const { return red; }
@@ -35,6 +40,9 @@ private:
   Brain *red;
   Brain *blue;
   GameObject **field;
+  int fieldSize;
+
+  void makemove(Robot **, Brain *);
 
   static GameObject **defaultField();
   static const int defaultFieldSize;
