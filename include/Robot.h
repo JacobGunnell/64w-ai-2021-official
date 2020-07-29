@@ -5,7 +5,9 @@
 #include "Container.h"
 #include "SensorWrapper.h"
 #include <cmath>
-#define PI 3.14159265
+#ifndef PI
+#define PI 3.14159265358979323846
+#endif
 
 enum Alliance {RED_ALLIANCE=0, BLUE_ALLIANCE=1};
 

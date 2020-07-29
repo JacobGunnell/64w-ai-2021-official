@@ -15,6 +15,7 @@ Match::Match(Brain *redBrain, Brain *blueBrain)
   lp = 0;
   field = defaultField();
   fieldSize = defaultFieldSize;
+  generator = default_random_engine(std::chrono::system_clock::now().time_since_epoch().count());
 }
 
 Match::Match(const Match &cpy)
@@ -26,20 +27,20 @@ Match::Match(const Match &cpy)
   field = new GameObject*[cpy.fieldSize];
   for(int i = 0; i < cpy.fieldSize; i++)
     field[i] = cpy.field[i]->clone();
+  generator = default_random_engine(std::chrono::system_clock::now().time_since_epoch().count());
 }
 
 Match::~Match()
 {
   delete red;
   delete blue;
-  for(int i = 0; i < defaultFieldSize; i++)
+  for(int i = 0; i < fieldSize; i++)
     delete field[i];
   delete [] field;
 }
 
 Alliance Match::run()
 {
-  // TODO: simulate a match
   Robot **redrobots = getRedRobots(field);
   Robot **bluerobots = getBlueRobots(field);
   double redtime = 120.0;
@@ -48,11 +49,11 @@ Alliance Match::run()
   {
     while(redtime >= bluetime)
     {
-      makemove(redrobots, red);
+      redtime -= makemove(redrobots, red, redtime);
     }
     while(bluetime >= redtime)
     {
-      makemove(bluerobots, blue);
+      bluetime -= makemove(bluerobots, blue, bluetime);
     }
   }
 
@@ -107,15 +108,15 @@ void Match::reset()
   delete [] field;
 }
 
-void Match::makemove(Robot **bots, Brain *brn)
+double Match::makemove(Robot **bots, Brain *brn, double timeRemaining)
 {
   double umax = 0; int umaxidx;
 	Move **possibleMoves;
 	int len;
   len = Move::getNumExistentMoves();
-  possibleMoves = Move::getAllPossibleMoves(bots[0]->getViewableWrapper(field, defaultFieldSize));
+  possibleMoves = Move::getAllPossibleMoves(bots[0]->getViewableWrapper(field, defaultFieldSize), timeRemaining);
   len = Move::getNumExistentMoves() - len;
-  mat U = brn->integrate(Move::getAllPossibleMovesMatrix(possibleMoves, len));
+  arma::mat U = brn->integrate(Move::toMatrix(possibleMoves, len));
   for(int m = 0; m < len; m++)
   {
     if(U(m) > umax)
@@ -124,10 +125,24 @@ void Match::makemove(Robot **bots, Brain *brn)
       umaxidx = m;
     }
   }
-  possibleMoves[umaxidx]->vexecute(bots[0]); // TODO: implement did-this-move-work?
-  for(int i = 0; i < len; i++)
-    delete possibleMoves[i];
-  delete [] possibleMoves;
+  double estTime = possibleMoves[umaxidx]->getData().t;
+  normal_distribution<double> dist(estTime, .01*estTime); // introduce noise with mean t and standard deviation proportional to t
+  double actualTime = estTime + dist(generator);
+  if(actualTime <= timeRemaining)
+  {
+    possibleMoves[umaxidx]->vexecute(bots[0]);
+    for(int i = 0; i < len; i++)
+      delete possibleMoves[i];
+    delete [] possibleMoves;
+    return actualTime < 0 ? actualTime : 0; // on the off chance that the gaussian noise screws it up, don't let time be negative
+  }
+  else
+  {
+    for(int i = 0; i < len; i++)
+      delete possibleMoves[i];
+    delete [] possibleMoves;
+    return timeRemaining;
+  }
 }
 
 GameObject **Match::defaultField()

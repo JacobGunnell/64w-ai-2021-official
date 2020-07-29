@@ -11,10 +11,8 @@
 
 #include <random>
 #include <ctime>
+#include <chrono>
 using namespace std;
-
-#include "armadillo"
-using namespace arma;
 
 class Match
 {
@@ -41,8 +39,9 @@ private:
   Brain *blue;
   GameObject **field;
   int fieldSize;
+  default_random_engine generator;
 
-  void makemove(Robot **, Brain *);
+  double makemove(Robot **, Brain *, double);
 
   static GameObject **defaultField();
   static const int defaultFieldSize;

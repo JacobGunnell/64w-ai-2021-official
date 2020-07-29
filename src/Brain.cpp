@@ -3,17 +3,17 @@
 Brain::Brain(int numInputs, int numHidden) // create a random brain with specific dimensions
 {
   int R = numInputs / numHidden;
-  WL1 = mat(numInputs, numHidden, fill::randu);
+  WL1 = arma::mat(numInputs, numHidden, arma::fill::randu);
   for(int row = numHidden; row < numInputs; row++)
   {
     for(int col = 0; col < row/R; col++)
       WL1(row,col) = 0;
   }
-  WL2 = mat(numHidden, 1, fill::randu);
-  B = mat(1, numHidden, fill::randn);
+  WL2 = arma::mat(numHidden, 1, arma::fill::randu);
+  B = arma::mat(1, numHidden, arma::fill::randn);
 }
 
-Brain::Brain(mat wl1, mat wl2, mat b) // create a brain from matrices
+Brain::Brain(arma::mat wl1, arma::mat wl2, arma::mat b) // create a brain from matrices
 {
   WL1 = wl1;
   WL2 = wl2;
@@ -21,7 +21,7 @@ Brain::Brain(mat wl1, mat wl2, mat b) // create a brain from matrices
 
   try
   {
-    mat temp = wl1 * wl2; // if this either of these multiplications fail (user has inputted bad data) it will throw
+    arma::mat temp = wl1 * wl2; // if this either of these multiplications fail (user has inputted bad data) it will throw
     temp = b * wl2;
   }
   catch(logic_error e)
@@ -36,11 +36,11 @@ Brain::Brain(Brain *mother, Brain *father) // breed a brain from a mother and a 
   // TODO
 }
 
-mat Brain::integrate(mat X)
+arma::mat Brain::integrate(arma::mat X)
 {
-  mat EB(X.n_rows, B.n_cols, fill::zeros);
+  arma::mat EB(X.n_rows, B.n_cols, arma::fill::zeros);
   EB.each_row() += B;
-  mat U = (f(X*WL1 + EB) * WL2);
+  arma::mat U = (f(X*WL1 + EB) * WL2);
   return U;
 }
 

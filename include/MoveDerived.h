@@ -2,6 +2,7 @@
 #define MOVEDERIVED_H
 
 
+#include "Hardware.h"
 #include "Goal.h"
 #include "Ball.h"
 #include "Move.h"
@@ -12,9 +13,9 @@ class Cycle : public Move
 public:
   Cycle(Goal *goal_) : Move(), goal(goal_) {}
 
-  colvec vectorize();
-  bool execute();
-  bool vexecute(Robot *);
+  MoveData getData() override;
+  bool execute() override;
+  bool vexecute(Robot *) override;
 
   Goal *goal;
 };
@@ -24,9 +25,9 @@ class Intake : public Move
 public:
   Intake(Ball *ball_) : Move(), ball(ball_) {}
 
-  colvec vectorize();
-  bool execute();
-  bool vexecute(Robot *);
+  MoveData getData() override;
+  bool execute() override;
+  bool vexecute(Robot *) override;
 
   Ball *ball;
 };

@@ -1,7 +1,6 @@
 #include "Move.h"
 
 int Move::numExistentMoves = 0;
-const double Move::K = 2.7;
 
 Move::Move()
 {
@@ -13,17 +12,17 @@ Move::~Move()
   numExistentMoves--;
 }
 
-Move **Move::getAllPossibleMoves(SensorWrapper data)
+Move **Move::getAllPossibleMoves(SensorWrapper data, double timeRemaining)
 {
   // TODO
   Move **m = new Move*[100];
   return m;
 }
 
-mat Move::getAllPossibleMovesMatrix(Move **m, const int len)
+arma::mat Move::toMatrix(Move **m, const int len)
 {
-  mat matrix;
+  arma::mat matrix;
   for(int i = 0; i < len; i++)
-    matrix.insert_cols(i, m[i]->vectorize());
+    matrix.insert_cols(i, m[i]->getData().vectorize());
   return matrix;
 }

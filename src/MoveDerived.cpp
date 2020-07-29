@@ -1,6 +1,6 @@
 #include "MoveDerived.h"
 
-colvec Cycle::vectorize()
+MoveData Cycle::getData()
 {
 
 }
@@ -15,12 +15,9 @@ bool Cycle::vexecute(Robot *robot)
 
 }
 
-colvec Intake::vectorize()
+MoveData Intake::getData()
 {
-  double P, T, Tnorm;
-  P = 0;
-  // TODO: implement time factor estimate
-  return colvec{P, Tnorm};
+  
 }
 
 bool Intake::execute()

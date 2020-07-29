@@ -1,20 +1,12 @@
 #include "main.h"
+#include "Hardware.h"
 
 // Globals
-// Motor objects
-
-
-// Sensor objects
-
-
-// Mutexes
-
-
-// Other objects
-
-
-// Other variables
-
+shared_ptr<ChassisController> Chassis = ChassisControllerBuilder()
+	.withMotors(1, -10, 11, -20)
+	.withDimensions(AbstractMotor::gearset::green, {{4_in, 11.5_in}, imev5GreenTPR}) // TODO: update dimensions
+	.build();
+shared_ptr<XDriveModel> Drive = dynamic_pointer_cast<XDriveModel>(Chassis->getModel());
 
 // Function prototypes
 
@@ -51,7 +43,7 @@ void opcontrol()
 		len = Move::getNumExistentMoves();
 		possibleMoves = Move::getAllPossibleMoves(s);
 		len = Move::getNumExistentMoves() - len;
-		mat U = brain.integrate(Move::getAllPossibleMovesMatrix(possibleMoves, len));
+		arma::mat U = brain.integrate(Move::toMatrix(possibleMoves, len));
 		for(int m = 0; m < len; m++)
 		{
 			if(U(m) > umax)
