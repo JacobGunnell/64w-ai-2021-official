@@ -1,8 +1,9 @@
 #ifndef MOVEDERIVED_H
 #define MOVEDERIVED_H
 
-
+#ifndef GENERATION_NO_ROBOT
 #include "Hardware.h"
+#endif
 #include "Goal.h"
 #include "Ball.h"
 #include "Move.h"

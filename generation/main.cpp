@@ -12,6 +12,8 @@ using namespace std::chrono;
 
 #include "CLI11.hpp"
 
+#define GENERATION_NO_ROBOT
+
 int main(int argc, char **argv)
 {
   CLI::App app{"Generation, a program to breed a competent AI brain using an evolutional framework."};
@@ -32,7 +34,7 @@ int main(int argc, char **argv)
 
   // Seed random number generators
   srand(time(0));
-  arma_rng::set_seed_random();
+  arma::arma_rng::set_seed_random();
 
   // Initialize Generation 0
   const int N_INPUTS = 3;
@@ -46,9 +48,9 @@ int main(int argc, char **argv)
   list<Brain>::reverse_iterator blue;
 
   const int PREDESIGNED = 1;
-  colvec predesigned[PREDESIGNED] = { {1.0,.7,.2} };
+  arma::colvec predesigned[PREDESIGNED] = { {1.0,.7,.2} };
   for(int i = 0; i < PREDESIGNED; i++)
-    cGen.push_front(Brain(mat(predesigned[i]), mat{1}, mat{0})); // seed current generation with predesigned brains
+    cGen.push_front(Brain(arma::mat(predesigned[i]), arma::mat{1}, arma::mat{0})); // seed current generation with predesigned brains
   for(int i = PREDESIGNED; i < POPULATION; i++)
     cGen.push_front(Brain(N_INPUTS, N_HIDDEN));
 
