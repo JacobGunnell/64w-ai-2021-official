@@ -20,3 +20,11 @@ Ball *Container::popBall()
   balls.pop_front();
   return b;
 }
+
+int Container::numBalls(Color c)
+{
+  int n = 0;
+  for(deque<Ball *>::iterator it = balls.begin(); it != balls.end(); it++)
+    n += ((*it)->getColor() == c);
+  return n;
+}

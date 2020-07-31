@@ -31,6 +31,8 @@ void competition_initialize() {}
 
 void opcontrol()
 {
+	Robot bigRobot(T_MASTER, RED_ALLIANCE, 0, 0, 0, 4, 50, static_cast<double>(Chassis->getGearsetRatioPair().internalGearset)); // TODO: read from sensors
+	Robot smallRobot(T_SLAVE, RED_ALLIANCE, 0, 0, 0, 3, 50);
 	Brain brain;
 	brain.load(BRAINFILE);
 	double umax = 0; int umaxidx;
@@ -43,16 +45,25 @@ void opcontrol()
 		len = Move::getNumExistentMoves();
 		possibleMoves = Move::getAllPossibleMoves(s);
 		len = Move::getNumExistentMoves() - len;
-		arma::mat U = brain.integrate(Move::toMatrix(possibleMoves, len));
+		arma::mat Umaster = brain.integrate(Move::toMatrix(possibleMoves, len, &bigRobot));
 		for(int m = 0; m < len; m++)
 		{
-			if(U(m) > umax)
+			if(Umaster(m) > umax)
 			{
-				umax = U(m);
+				umax = Umaster(m);
 				umaxidx = m;
 			}
 		}
 		possibleMoves[umaxidx]->execute(); // Do the move that the AI thinks is the best strategically
+		arma::mat Uslave = brain.integrate(Move::toMatrix(possibleMoves, len, &smallRobot));
+		for(int m = 0; m < len; m++)
+		{
+			if(Uslave(m) > umax)
+			{
+				umax = Umaster(m);
+				umaxidx = m;
+			}
+		}
 		delete possibleMoves;
 	}
 }

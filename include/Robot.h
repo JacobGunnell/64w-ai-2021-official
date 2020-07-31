@@ -10,28 +10,34 @@
 #endif
 
 enum Alliance {RED_ALLIANCE=0, BLUE_ALLIANCE=1};
+enum Type {T_MASTER, T_SLAVE};
 
 class Move;
 
-class Robot final : public Container
+class Robot : public Container
 {
 public:
-  Robot(double xcoord, double ycoord, double heading_, int ballcapacity, Alliance alliance, double fov) : Container(xcoord, ycoord, ballcapacity), heading(heading_), _alliance(alliance), _fov(fov) {}
-  Robot(double xcoord, double ycoord, double heading_, int ballcapacity, Alliance alliance, double fov, Ball *b) : Container(xcoord, ycoord, ballcapacity), heading(heading_), _alliance(alliance), _fov(fov) { balls.push_back(b); }
+  Robot(Type type, Alliance alliance, double xcoord, double ycoord, double heading_, int ballcapacity, double fov, double speed = (200.0/60.0) * 4.0*PI) : Container(xcoord, ycoord, ballcapacity), heading(heading_), _alliance(alliance), _type(type), _fov(fov), avgSpeed(speed) {}
+  Robot(Type type, Alliance alliance, double xcoord, double ycoord, double heading_, int ballcapacity, double fov, Ball *b, double speed = (200.0/60.0) * 4.0*PI) : Container(xcoord, ycoord, ballcapacity), heading(heading_), _alliance(alliance), _type(type), _fov(fov), avgSpeed(speed) { balls.push_back(b); }
 
   Robot *clone() override { return new Robot(*this); }
 
   Alliance getAlliance() const { return _alliance; }
+  Type getType() const { return _type; }
+  double getFOV() const { return _fov; }
   void moveTo(double x_, double y_, double h_) { x = x_; y = y_; heading = h_; }
   void moveTo(double x_, double y_) { x = x_; y = y_; }
+  void moveTo(GameObject *g) { moveTo(g->x, g->y); }
   bool executeMove(Move *);
 
   SensorWrapper getViewableWrapper(GameObject **, const int);
 
   double heading;
+  double avgSpeed; // rough estimate of robot speed in inches per second
 
 private:
   Alliance _alliance;
+  Type _type;
   double _fov;
 };
 

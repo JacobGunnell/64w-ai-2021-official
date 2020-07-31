@@ -19,7 +19,6 @@ public:
 
   Ball *top() { if(!balls.empty()) return balls.back(); else return NULL; }
   Color topColor() { if(top() != NULL) return top()->getColor(); else return NONE; }
-  int numBalls(Color);
 };
 
 #endif // GOAL_H

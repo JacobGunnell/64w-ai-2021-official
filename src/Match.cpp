@@ -116,7 +116,7 @@ double Match::makemove(Robot **bots, Brain *brn, double timeRemaining)
   len = Move::getNumExistentMoves();
   possibleMoves = Move::getAllPossibleMoves(bots[0]->getViewableWrapper(field, defaultFieldSize), timeRemaining);
   len = Move::getNumExistentMoves() - len;
-  arma::mat U = brn->integrate(Move::toMatrix(possibleMoves, len));
+  arma::mat U = brn->integrate(Move::toMatrix(possibleMoves, len, bots[0]));
   for(int m = 0; m < len; m++)
   {
     if(U(m) > umax)
@@ -125,7 +125,7 @@ double Match::makemove(Robot **bots, Brain *brn, double timeRemaining)
       umaxidx = m;
     }
   }
-  double estTime = possibleMoves[umaxidx]->getData().t;
+  double estTime = possibleMoves[umaxidx]->getData(bots[0]).t;
   normal_distribution<double> dist(estTime, .01*estTime); // introduce noise with mean t and standard deviation proportional to t
   double actualTime = estTime + dist(generator);
   if(actualTime <= timeRemaining)
@@ -183,13 +183,13 @@ GameObject **Match::defaultField()
     static_cast<Ball *>(balls[bidx++] = new Ball{RED})};
 
   // Robots / Preloads
-  robots[ridx++] = new Robot{-60, 36, 90, 4, RED_ALLIANCE, 50,
+  robots[ridx++] = new Robot{T_MASTER, RED_ALLIANCE, -60, 36, 90, 4, 50,
     static_cast<Ball *>(balls[bidx++] = new Ball{RED})};
-  robots[ridx++] = new Robot{-60, -36, 90, 4, RED_ALLIANCE, 50,
+  robots[ridx++] = new Robot{T_SLAVE, RED_ALLIANCE, -60, -36, 90, 3, 50,
     static_cast<Ball *>(balls[bidx++] = new Ball{RED})};
-  robots[ridx++] = new Robot{60, 36, -90, 4, BLUE_ALLIANCE, 50,
+  robots[ridx++] = new Robot{T_MASTER, BLUE_ALLIANCE, 60, 36, -90, 4, 50,
     static_cast<Ball *>(balls[bidx++] = new Ball{BLUE})};
-  robots[ridx++] = new Robot{60, -36, -90, 4, BLUE_ALLIANCE, 50,
+  robots[ridx++] = new Robot{T_SLAVE, BLUE_ALLIANCE, 60, -36, -90, 3, 50,
     static_cast<Ball *>(balls[bidx++] = new Ball{BLUE})};
 
   // Balls on field

@@ -5,6 +5,7 @@
 #include "GameObject.h"
 
 enum Color {RED=0, BLUE=1, NONE=-1};
+Color operator!(const Color &);
 
 class Ball final : public GameObject
 {

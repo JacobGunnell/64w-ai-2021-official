@@ -14,7 +14,7 @@ class Cycle : public Move
 public:
   Cycle(Goal *goal_) : Move(), goal(goal_) {}
 
-  MoveData getData() override;
+  MoveData getData(Robot *) override;
   bool execute() override;
   bool vexecute(Robot *) override;
 
@@ -26,7 +26,7 @@ class Intake : public Move
 public:
   Intake(Ball *ball_) : Move(), ball(ball_) {}
 
-  MoveData getData() override;
+  MoveData getData(Robot *) override;
   bool execute() override;
   bool vexecute(Robot *) override;
 

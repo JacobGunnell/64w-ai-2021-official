@@ -12,8 +12,8 @@ struct MoveData
 {
   int p; // how many points does this score?
   double t; // how long will it take?
-  double KT = 2.71; // time normalization constant
   double r; // how sure are you that the move will finish?
+  double KT = 2.71; // time normalization constant
   arma::colvec vectorize() { return arma::colvec{static_cast<double>(p), pow(KT, -t*t), r}; }
 };
 
@@ -23,12 +23,12 @@ public:
   Move();
   virtual ~Move();
 
-  virtual MoveData getData() = 0; // instructions to convert to vector form for AI consideration (TODO: expand vectors)
+  virtual MoveData getData(Robot *) = 0; // instructions to convert to vector form for AI consideration (TODO: expand vectors)
   virtual bool execute() = 0; // instructions to execute with a real robot
   virtual bool vexecute(Robot *) = 0; // instructions to execute on a virtual Robot
 
   static Move **getAllPossibleMoves(SensorWrapper, double = -1);
-  static arma::mat toMatrix(Move **, const int);
+  static arma::mat toMatrix(Move **, const int, Robot *);
   static int getNumExistentMoves() { return numExistentMoves; }
 
 private:
