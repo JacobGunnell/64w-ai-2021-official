@@ -1,6 +1,7 @@
 #ifndef MOVEDERIVED_H
 #define MOVEDERIVED_H
 
+
 #ifndef GENERATION_NO_ROBOT
 #include "Hardware.h"
 #endif
@@ -31,6 +32,20 @@ public:
   bool vexecute(Robot *) override;
 
   Ball *ball;
+};
+
+class ConnectRow : public Move
+{
+public:
+  ConnectRow(int, Goal *[9]);
+
+  MoveData getData(Robot *) override;
+  bool execute() override;
+  bool vexecute(Robot *) override;
+
+  int row;
+  static const int NUM_GOALS = 3;
+  Goal *goals[NUM_GOALS];
 };
 
 #endif // MOVEDERIVED_H

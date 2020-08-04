@@ -9,7 +9,7 @@ SensorWrapper::SensorWrapper(GameObject **objs_, int numObjs_)
     for(int i = 0; i < numObjs; i++)
     {
       if(objs_[i] != NULL)
-        objs[i] = new GameObject(*objs_[i]);
+        objs[i] = objs_[i]->clone();
       else
         objs[i] = NULL;
     }
@@ -30,7 +30,7 @@ SensorWrapper::SensorWrapper(const SensorWrapper &cpy)
     for(int i = 0; i < numObjs; i++)
     {
       if(cpy.objs[i] != NULL)
-        objs[i] = new GameObject(*cpy.objs[i]);
+        objs[i] = cpy.objs[i]->clone();
       else
         objs[i] = NULL;
     }

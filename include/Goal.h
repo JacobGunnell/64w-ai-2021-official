@@ -14,6 +14,7 @@ public:
   Goal(double xcoord, double ycoord, Ball *b1, Ball *b2) : Container(xcoord, ycoord, 3) { balls.push_back(b1); balls.push_back(b2); }
   Goal(double xcoord, double ycoord, Ball *b1) : Container(xcoord, ycoord, 3) { balls.push_back(b1); }
   Goal(double xcoord, double ycoord) : Container(xcoord, ycoord, 3) {}
+  ~Goal() = default;
 
   Goal *clone() override { return new Goal(*this); }
 

@@ -17,16 +17,15 @@ using namespace std;
 class Match
 {
 public:
-  Match(Brain *, Brain *);
+  Match(Brain, Brain);
   Match(const Match &);
-  Match() : Match(NULL, NULL) {}
   ~Match();
 
-  void setRed(Brain *r) { if(r != NULL) red = r; }
-  Brain *getRed() const { return red; }
-  void setBlue(Brain *b) { if(b != NULL) blue = b; }
-  Brain *getBlue() const { return blue; }
-  void setContestants(Brain *r, Brain *b) { setRed(r); setBlue(b); }
+  void setRed(Brain r) { red = r; }
+  Brain getRed() const { return red; }
+  void setBlue(Brain b) { blue = b; }
+  Brain getBlue() const { return blue; }
+  void setContestants(Brain r, Brain b) { setRed(r); setBlue(b); }
 
   Alliance run();
   int score(Alliance);
@@ -34,14 +33,16 @@ public:
 
   int wp, lp;
 
+  static const int connectableRowIndices[8][3];
+
 private:
-  Brain *red;
-  Brain *blue;
+  Brain red;
+  Brain blue;
   GameObject **field;
   int fieldSize;
   default_random_engine generator;
 
-  double makemove(Robot **, Brain *, double);
+  double makemove(Robot **, Brain &, double);
 
   static GameObject **defaultField();
   static const int defaultFieldSize;

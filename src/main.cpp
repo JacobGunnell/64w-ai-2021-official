@@ -60,7 +60,7 @@ void opcontrol()
 		{
 			if(Uslave(m) > umax)
 			{
-				umax = Umaster(m);
+				umax = Uslave(m);
 				umaxidx = m;
 			}
 		}

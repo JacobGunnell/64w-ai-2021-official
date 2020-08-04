@@ -13,7 +13,7 @@ Brain::Brain(int numInputs, int numHidden) // create a random brain with specifi
   B = arma::mat(1, numHidden, arma::fill::randn);
 }
 
-Brain::Brain(arma::mat wl1, arma::mat wl2, arma::mat b) // create a brain from matrices
+Brain::Brain(arma::mat &wl1, arma::mat &wl2, arma::mat &b) // create a brain from matrices
 {
   WL1 = wl1;
   WL2 = wl2;
@@ -21,19 +21,26 @@ Brain::Brain(arma::mat wl1, arma::mat wl2, arma::mat b) // create a brain from m
 
   try
   {
-    arma::mat temp = wl1 * wl2; // if this either of these multiplications fail (user has inputted bad data) it will throw
+    arma::mat temp = wl1 * wl2; // if either of these multiplications fail (user has inputted bad data) it will throw
     temp = b * wl2;
   }
-  catch(logic_error e)
+  catch(logic_error &e)
   {
     cout << "Constructor Error: Bad matrix dimensions for a Brain object!" << endl;
     terminate();
   }
 }
 
-Brain::Brain(Brain *mother, Brain *father) // breed a brain from a mother and a father
+Brain::Brain(Brain &mother, Brain &father) // breed a brain from a mother and a father
 {
   // TODO
+}
+
+Brain::Brain(const Brain &cpy)
+{
+  WL1 = arma::mat(cpy.WL1);
+  WL2 = arma::mat(cpy.WL2);
+  B = arma::mat(cpy.B);
 }
 
 arma::mat Brain::integrate(arma::mat X)
@@ -46,18 +53,20 @@ arma::mat Brain::integrate(arma::mat X)
 
 bool Brain::save(string filename)
 {
+  ofstream stream(filename, ios_base::binary);
   return
-  WL1.save(filename + "-wl1.brn") &&
-  WL2.save(filename + "-wl2.brn") &&
-  B.save(filename + "-b.brn");
+  WL1.save(stream) &&
+  WL2.save(stream) &&
+  B.save(stream);
 }
 
 bool Brain::load(string filename)
 {
+  ifstream stream(filename, ios_base::binary);
   return
-  WL1.load(filename + "-wl1.brn") &&
-  WL2.load(filename + "-wl2.brn") &&
-  B.load(filename + "-b.brn");
+  WL1.load(stream) &&
+  WL2.load(stream) &&
+  B.load(stream);
 }
 
 void Brain::mutate()

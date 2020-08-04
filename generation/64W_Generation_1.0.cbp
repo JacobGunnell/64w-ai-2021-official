@@ -11,7 +11,7 @@
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gnu_gcc_compiler_x64" />
-				<Option parameters="-g 10" />
+				<Option parameters="-g 10 -p 16" />
 				<Compiler>
 					<Add option="-std=c++14" />
 					<Add option="-m64" />
@@ -53,6 +53,7 @@
 			<Add option="-Wall" />
 			<Add option="-m64" />
 			<Add option="-fexceptions" />
+			<Add option="-DGENERATION_NO_ROBOT" />
 		</Compiler>
 		<Linker>
 			<Add option="-static-libstdc++" />

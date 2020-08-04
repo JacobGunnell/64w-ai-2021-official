@@ -13,8 +13,9 @@ SensorWrapper Robot::getViewableWrapper(GameObject **field, const int fieldLen)
     if((dy*sin(a1) >= dx*cos(a1)) && (dy*sin(a2) >= dx*cos(a2))) // check if object is within fov
       visible[writeidx++] = field[i]; // add pointer to visible array
   }
-  delete [] (visible + writeidx); // clear extra memory
-  return SensorWrapper(visible, writeidx);
+  SensorWrapper s(visible, writeidx);
+  delete [] visible;
+  return s;
 }
 
 bool Robot::executeMove(Move *m)

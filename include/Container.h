@@ -11,6 +11,7 @@ class Container : public GameObject
 {
 public:
   Container(double xcoord, double ycoord, int size) : GameObject(xcoord, ycoord), _size(size) {}
+  virtual ~Container() = default;
 
   deque<Ball *> getBalls() const { return balls; }
   int numBalls() const { return balls.size(); }

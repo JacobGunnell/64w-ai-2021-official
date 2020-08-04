@@ -12,6 +12,7 @@ class Ball final : public GameObject
 public:
   Ball(double xcoord, double ycoord, Color color) : GameObject(xcoord, ycoord), _color(color) {}
   Ball(Color color) : Ball(0, 0, color) {}
+  ~Ball() = default;
 
   Ball *clone() override { return new Ball(*this); }
 

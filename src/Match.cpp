@@ -1,16 +1,24 @@
 #include "Match.h"
 
 const int Match::numGoals = 9;
-const int Match::numRedRobots = 1; // TODO: implement 2 on 2
-const int Match::numBlueRobots = 1;
+const int Match::numRedRobots = 2; // TODO: implement 2 on 2
+const int Match::numBlueRobots = 2;
 const int Match::numRobots = Match::numRedRobots + Match::numBlueRobots;
 const int Match::numBalls = 32;
 const int Match::defaultFieldSize = numGoals + numRobots + numBalls;
+const int Match::connectableRowIndices[8][3] = {{0, 1, 2},
+                                                {3, 4, 5},
+                                                {6, 7, 8},
+                                                {0, 3, 6},
+                                                {1, 4, 7},
+                                                {2, 5, 8},
+                                                {0, 4, 8},
+                                                {2, 4, 6}};
 
-Match::Match(Brain *redBrain, Brain *blueBrain)
+Match::Match(Brain redBrain, Brain blueBrain)
 {
-  red = new Brain(*redBrain);
-  blue = new Brain(*blueBrain);
+  red = redBrain;
+  blue = blueBrain;
   wp = 0;
   lp = 0;
   field = defaultField();
@@ -20,8 +28,8 @@ Match::Match(Brain *redBrain, Brain *blueBrain)
 
 Match::Match(const Match &cpy)
 {
-  red = new Brain(*cpy.red);
-  blue = new Brain(*cpy.blue);
+  red = Brain(cpy.red);
+  blue = Brain(cpy.blue);
   wp = cpy.wp;
   lp = cpy.lp;
   field = new GameObject*[cpy.fieldSize];
@@ -32,8 +40,6 @@ Match::Match(const Match &cpy)
 
 Match::~Match()
 {
-  delete red;
-  delete blue;
   for(int i = 0; i < fieldSize; i++)
     delete field[i];
   delete [] field;
@@ -48,13 +54,9 @@ Alliance Match::run()
   while(redtime > 0 && bluetime > 0)
   {
     while(redtime >= bluetime)
-    {
-      redtime -= makemove(redrobots, red, redtime);
-    }
+      redtime -= makemove(redrobots, red, redtime) + .1;
     while(bluetime >= redtime)
-    {
-      bluetime -= makemove(bluerobots, blue, bluetime);
-    }
+      bluetime -= makemove(bluerobots, blue, bluetime) + .1;
   }
 
   int pred = score(RED_ALLIANCE);
@@ -65,11 +67,16 @@ Alliance Match::run()
     lp = pblue;
     return RED_ALLIANCE;
   }
-  else
+  else if(pblue > pred)
   {
     wp = pblue;
     lp = pred;
     return BLUE_ALLIANCE;
+  }
+  else
+  {
+    wp = pred;
+    return NEITHER_ALLIANCE;
   }
 }
 
@@ -82,14 +89,6 @@ int Match::score(Alliance a)
   for(int i = 0; i < numGoals; i++)
     score += goals[i]->numBalls(c); // each scored Ball of your alliance color is worth 1 point
 
-  int connectableRowIndices[8][3] = {{0, 1, 2},
-                                     {3, 4, 5},
-                                     {6, 7, 8},
-                                     {0, 3, 6},
-                                     {1, 4, 7},
-                                     {2, 5, 8},
-                                     {0, 4, 8},
-                                     {2, 4, 6}};
   for(int i = 0; i < 8; i++)
     if(goals[connectableRowIndices[i][0]]->topColor() == c &&
     goals[connectableRowIndices[i][1]]->topColor() == c &&
@@ -106,18 +105,36 @@ void Match::reset()
   for(int i = 0; i < defaultFieldSize; i++)
     delete field[i];
   delete [] field;
+  field = defaultField();
 }
 
-double Match::makemove(Robot **bots, Brain *brn, double timeRemaining)
+double Match::makemove(Robot **bots, Brain &brn, double timeRemaining)
 {
+  if(bots == NULL)
+    return 0;
+  if(bots[0] == NULL || bots[1] == NULL)
+    return 0;
+  if(timeRemaining <= 0)
+    return 0;
+
   double umax = 0; int umaxidx;
 	Move **possibleMoves;
 	int len;
   len = Move::getNumExistentMoves();
-  possibleMoves = Move::getAllPossibleMoves(bots[0]->getViewableWrapper(field, defaultFieldSize), timeRemaining);
+  possibleMoves = Move::getAllPossibleMoves(bots[0]->getViewableWrapper(field, fieldSize), timeRemaining);
   len = Move::getNumExistentMoves() - len;
-  arma::mat U = brn->integrate(Move::toMatrix(possibleMoves, len, bots[0]));
-  for(int m = 0; m < len; m++)
+  if(possibleMoves == NULL)
+    return 0;
+  if(len == 0)
+  {
+    delete [] possibleMoves;
+    return 0;
+  }
+
+  arma::mat U = brn.integrate(Move::toMatrix(possibleMoves, len, bots[0]));
+  if(U.n_elem != len)
+    return 0;
+  for(int m = 0; m < U.n_elem; m++)
   {
     if(U(m) > umax)
     {
@@ -125,7 +142,12 @@ double Match::makemove(Robot **bots, Brain *brn, double timeRemaining)
       umaxidx = m;
     }
   }
-  double estTime = possibleMoves[umaxidx]->getData(bots[0]).t;
+
+  double estTime;
+  if(possibleMoves[umaxidx] != NULL)
+    estTime = possibleMoves[umaxidx]->getData(bots[0]).t;
+  else
+    return 0;
   normal_distribution<double> dist(estTime, .01*estTime); // introduce noise with mean t and standard deviation proportional to t
   double actualTime = estTime + dist(generator);
   if(actualTime <= timeRemaining)
