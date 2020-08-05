@@ -1,3 +1,6 @@
+#ifndef GENERATION_NO_ROBOT
+#include "Hardware.h"
+#endif
 #include "MoveDerived.h"
 
 MoveData Cycle::getData(Robot *robot)
@@ -37,7 +40,7 @@ bool Intake::vexecute(Robot *robot)
 ConnectRow::ConnectRow(int row_, Goal *goals_[9]) : Move(), row(row_)
 {
   for(int i = 0; i < NUM_GOALS; i++)
-    goals[i] = goals_[Match::connectableRowIndices[row][i]];
+    goals[i] = goals_[Goal::connectableRowIndices[row][i]];
 }
 
 MoveData ConnectRow::getData(Robot *robot)
@@ -90,6 +93,8 @@ bool ConnectRow::execute()
 
 }
 
+bool ZeroMove::execute() { return true; }
+
 #else
 // Empty function definitions so that my gcc linker doesn't throw a fit when i build generation.exe
 // Just add one of these for every one of those ^
@@ -97,5 +102,6 @@ bool ConnectRow::execute()
 bool Cycle::execute() { return false; }
 bool Intake::execute() { return false; }
 bool ConnectRow::execute() { return false; }
+bool ZeroMove::execute() { return false; }
 
 #endif

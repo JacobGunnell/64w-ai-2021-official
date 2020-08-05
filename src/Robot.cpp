@@ -17,8 +17,3 @@ SensorWrapper Robot::getViewableWrapper(GameObject **field, const int fieldLen)
   delete [] visible;
   return s;
 }
-
-bool Robot::executeMove(Move *m)
-{
-  return m->vexecute(this);
-}

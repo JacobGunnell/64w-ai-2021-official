@@ -36,17 +36,13 @@ void opcontrol()
 	Brain brain;
 	brain.load(BRAINFILE);
 	double umax = 0; int umaxidx;
-	Move **possibleMoves;
-	int len;
 	while(true)
 	{
 		// capture vision data, compute all possible moves
 		SensorWrapper s(NULL, 0); // TODO: implement constructor to interface with Sensor Fusion API
-		len = Move::getNumExistentMoves();
-		possibleMoves = Move::getAllPossibleMoves(s);
-		len = Move::getNumExistentMoves() - len;
-		arma::mat Umaster = brain.integrate(Move::toMatrix(possibleMoves, len, &bigRobot));
-		for(int m = 0; m < len; m++)
+		MoveContainer possibleMoves(s, -1); // TODO: implement time factor
+		arma::mat Umaster = brain.integrate(Move::toMatrix(possibleMoves, &bigRobot));
+		for(int m = 0; m < Umaster.n_elem; m++)
 		{
 			if(Umaster(m) > umax)
 			{
@@ -55,8 +51,8 @@ void opcontrol()
 			}
 		}
 		possibleMoves[umaxidx]->execute(); // Do the move that the AI thinks is the best strategically
-		arma::mat Uslave = brain.integrate(Move::toMatrix(possibleMoves, len, &smallRobot));
-		for(int m = 0; m < len; m++)
+		arma::mat Uslave = brain.integrate(Move::toMatrix(possibleMoves, &smallRobot));
+		for(int m = 0; m < Uslave.n_elem; m++)
 		{
 			if(Uslave(m) > umax)
 			{
@@ -64,7 +60,6 @@ void opcontrol()
 				umaxidx = m;
 			}
 		}
-		delete possibleMoves;
 	}
 }
 

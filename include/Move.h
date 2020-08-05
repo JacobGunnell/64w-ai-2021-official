@@ -5,9 +5,10 @@
 #include "armadillo"
 #include "SensorWrapper.h"
 #include "Robot.h"
-#include "Match.h"
 #include <cmath>
 
+
+class MoveContainer;
 
 struct MoveData
 {
@@ -24,19 +25,22 @@ class Move
 {
 public:
   Move();
-  Move(const Move &) = delete;
   virtual ~Move();
 
   virtual MoveData getData(Robot *) = 0; // instructions to convert to vector form for AI consideration (TODO: expand vectors)
   virtual bool execute() = 0; // instructions to execute with a real robot
   virtual bool vexecute(Robot *) = 0; // instructions to execute on a virtual Robot
 
-  static Move **getAllPossibleMoves(SensorWrapper, double = -1);
+  virtual Move *clone() = 0;
+
   static arma::mat toMatrix(Move **, const int, Robot *);
+  static arma::mat toMatrix(MoveContainer, Robot *);
   static int getNumExistentMoves() { return numExistentMoves; }
 
 private:
   static int numExistentMoves;
 };
+
+#include "MoveContainer.h"
 
 #endif // MOVE_H

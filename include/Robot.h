@@ -12,8 +12,6 @@
 enum Alliance {RED_ALLIANCE=0, BLUE_ALLIANCE=1, NEITHER_ALLIANCE=-1};
 enum Type {T_MASTER, T_SLAVE};
 
-class Move;
-
 class Robot final : public Container
 {
 public:
@@ -29,7 +27,6 @@ public:
   void moveTo(double x_, double y_, double h_) { x = x_; y = y_; heading = h_; }
   void moveTo(double x_, double y_) { x = x_; y = y_; }
   void moveTo(GameObject *g) { moveTo(g->x, g->y); }
-  bool executeMove(Move *);
 
   SensorWrapper getViewableWrapper(GameObject **, const int);
 
@@ -41,7 +38,5 @@ private:
   Type _type;
   double _fov;
 };
-
-#include "Move.h"
 
 #endif // ROBOT_H

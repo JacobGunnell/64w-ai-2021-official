@@ -9,6 +9,7 @@
 #include "Goal.h"
 #include "Match.h"
 #include "Move.h"
+#include "MoveContainer.h"
 #include "MoveDerived.h"
 #include "Robot.h"
 #include "SensorWrapper.h"

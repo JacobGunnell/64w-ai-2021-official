@@ -1,3 +1,5 @@
+#ifdef GENERATION_NO_ROBOT // this source file is only for the training program
+
 #include <iostream>
 #include <list>
 #include <random>
@@ -128,7 +130,7 @@ int main(int argc, char **argv)
         while(midx == fidx);
         advance(mother, midx);
         advance(father, fidx);
-        cGen.emplace_back(&*mother, &*father); // make a child
+        cGen.emplace_back(*mother, *father); // make a child
         if(rand()%100 < MUTATION_CHANCE) // decide whether the child should be mutant
           cGen.back().mutate();
       }
@@ -150,8 +152,12 @@ int main(int argc, char **argv)
 #include "../src/Ball.cpp"
 #include "../src/Brain.cpp"
 #include "../src/Container.cpp"
+#include "../src/Goal.cpp"
 #include "../src/Match.cpp"
 #include "../src/Move.cpp"
+#include "../src/MoveContainer.cpp"
 #include "../src/MoveDerived.cpp"
 #include "../src/Robot.cpp"
 #include "../src/SensorWrapper.cpp"
+
+#endif // GENERATION_NO_ROBOT

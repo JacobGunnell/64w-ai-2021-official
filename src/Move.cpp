@@ -12,15 +12,6 @@ Move::~Move()
   numExistentMoves--;
 }
 
-Move **Move::getAllPossibleMoves(SensorWrapper data, double timeRemaining) // TODO: move this to an external class (can't access derived classes from a base class function!)
-{
-  int len = 0;
-  int lenmax = 0; // change!
-  Move **m = new Move *[lenmax];
-  // remember: include the zero move
-  return m;
-}
-
 arma::mat Move::toMatrix(Move **m, const int len, Robot *robot)
 {
   arma::mat matrix;
@@ -35,4 +26,9 @@ arma::mat Move::toMatrix(Move **m, const int len, Robot *robot)
   else
     matrix.reset();
   return matrix;
+}
+
+arma::mat Move::toMatrix(MoveContainer m, Robot *robot)
+{
+  return toMatrix(m.moves, m.len, robot);
 }

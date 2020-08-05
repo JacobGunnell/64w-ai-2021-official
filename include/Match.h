@@ -9,6 +9,8 @@
 #include "Ball.h"
 #include "Goal.h"
 
+#include "MoveContainer.h"
+
 #include <random>
 #include <ctime>
 #include <chrono>
@@ -32,8 +34,6 @@ public:
   void reset();
 
   int wp, lp;
-
-  static const int connectableRowIndices[8][3];
 
 private:
   Brain red;

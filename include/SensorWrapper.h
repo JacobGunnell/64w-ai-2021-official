@@ -3,6 +3,8 @@
 
 
 #include "GameObject.h"
+#include "Goal.h"
+#include "Ball.h"
 
 class SensorWrapper
 {

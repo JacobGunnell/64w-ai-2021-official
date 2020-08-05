@@ -4,8 +4,6 @@
 
 #include "Container.h"
 #include "Ball.h"
-#include <deque>
-using namespace std;
 
 class Goal final : public Container
 {
@@ -20,6 +18,8 @@ public:
 
   Ball *top() { if(!balls.empty()) return balls.back(); else return NULL; }
   Color topColor() { if(top() != NULL) return top()->getColor(); else return NONE; }
+
+  static const int connectableRowIndices[8][3];
 };
 
 #endif // GOAL_H

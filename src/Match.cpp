@@ -6,14 +6,6 @@ const int Match::numBlueRobots = 2;
 const int Match::numRobots = Match::numRedRobots + Match::numBlueRobots;
 const int Match::numBalls = 32;
 const int Match::defaultFieldSize = numGoals + numRobots + numBalls;
-const int Match::connectableRowIndices[8][3] = {{0, 1, 2},
-                                                {3, 4, 5},
-                                                {6, 7, 8},
-                                                {0, 3, 6},
-                                                {1, 4, 7},
-                                                {2, 5, 8},
-                                                {0, 4, 8},
-                                                {2, 4, 6}};
 
 Match::Match(Brain redBrain, Brain blueBrain)
 {
@@ -90,9 +82,9 @@ int Match::score(Alliance a)
     score += goals[i]->numBalls(c); // each scored Ball of your alliance color is worth 1 point
 
   for(int i = 0; i < 8; i++)
-    if(goals[connectableRowIndices[i][0]]->topColor() == c &&
-    goals[connectableRowIndices[i][1]]->topColor() == c &&
-    goals[connectableRowIndices[i][2]]->topColor() == c)
+    if(goals[Goal::connectableRowIndices[i][0]]->topColor() == c &&
+    goals[Goal::connectableRowIndices[i][1]]->topColor() == c &&
+    goals[Goal::connectableRowIndices[i][2]]->topColor() == c)
       score += 6; // 6 points for each Connected Row
 
   return score;
@@ -118,21 +110,10 @@ double Match::makemove(Robot **bots, Brain &brn, double timeRemaining)
     return 0;
 
   double umax = 0; int umaxidx;
-	Move **possibleMoves;
-	int len;
-  len = Move::getNumExistentMoves();
-  possibleMoves = Move::getAllPossibleMoves(bots[0]->getViewableWrapper(field, fieldSize), timeRemaining);
-  len = Move::getNumExistentMoves() - len;
-  if(possibleMoves == NULL)
-    return 0;
-  if(len == 0)
-  {
-    delete [] possibleMoves;
-    return 0;
-  }
+  MoveContainer possibleMoves(bots[0]->getViewableWrapper(field, fieldSize), timeRemaining);
 
-  arma::mat U = brn.integrate(Move::toMatrix(possibleMoves, len, bots[0]));
-  if(U.n_elem != len)
+  arma::mat U = brn.integrate(Move::toMatrix(possibleMoves, bots[0]));
+  if(U.n_elem != possibleMoves.getLen())
     return 0;
   for(int m = 0; m < U.n_elem; m++)
   {
@@ -153,18 +134,10 @@ double Match::makemove(Robot **bots, Brain &brn, double timeRemaining)
   if(actualTime <= timeRemaining)
   {
     possibleMoves[umaxidx]->vexecute(bots[0]);
-    for(int i = 0; i < len; i++)
-      delete possibleMoves[i];
-    delete [] possibleMoves;
     return actualTime < 0 ? actualTime : 0; // on the off chance that the gaussian noise screws it up, don't let time be negative
   }
   else
-  {
-    for(int i = 0; i < len; i++)
-      delete possibleMoves[i];
-    delete [] possibleMoves;
     return timeRemaining;
-  }
 }
 
 GameObject **Match::defaultField()
