@@ -45,12 +45,12 @@ int main(int argc, char **argv)
   const int N_INPUTS = 3;
   const int N_HIDDEN = 1;
 
-  list<Brain> cGen; // current generation
+  list<Brain *> cGen; // current generation
   int roundSize;
   int midx, fidx;
-  list<Brain>::iterator mother, father;
-  list<Brain>::iterator red;
-  list<Brain>::reverse_iterator blue;
+  list<Brain *>::iterator mother, father;
+  list<Brain *>::iterator red;
+  list<Brain *>::reverse_iterator blue;
 
   int numBrains = 0;
   if(!IFPATH.empty())
@@ -58,21 +58,24 @@ int main(int argc, char **argv)
     cout << "Loading brains from " << '"' << IFPATH << '"' << "... ";
     for(const auto &entry : fs::recursive_directory_iterator(IFPATH))
     {
-      if(entry.path().extension() == ".brn" && numBrains < POPULATION)
+      if(numBrains < POPULATION)
       {
-        Brain b;
-        if(b.load(entry.path().string()))
+        Brain *b = Brain::dynamic_load(entry.path().string());
+        if(b != NULL)
         {
           cGen.push_front(b);
           numBrains++;
         }
+        else
+          cout << "unrecognized file type " << '"' << entry.path().extension() << '"' << "; skipping " << entry.path() << endl;
       }
     }
     cout << "loaded " << numBrains << " brains" << endl;
   }
   cout << "Randomly generating " << POPULATION - numBrains << " brains to fill array... ";
-  for(int i = numBrains; i < POPULATION; i++)
-    cGen.push_front(Brain(N_INPUTS, N_HIDDEN));
+  // TODO
+  //for(int i = numBrains; i < POPULATION; i++)
+  //  cGen.push_front(Brain(N_INPUTS, N_HIDDEN));
   cout << "done" << endl;
 
   for(int gen = 0; gen < GEN_MAX; gen++)
@@ -110,9 +113,9 @@ int main(int argc, char **argv)
     {
       // Save elite to file
       cout << " saving  ...";
-      list<Brain>::iterator iter = cGen.begin();
+      list<Brain *>::iterator iter = cGen.begin();
       for(int i = 0; i < cGen.size(); i++)
-        iter++->save(OFPATH + "/brain" + to_string(i) + ".brn");
+        (*iter++)->save(OFPATH + "/brain" + to_string(i) + ".brn");
     }
     else
     {
@@ -130,9 +133,9 @@ int main(int argc, char **argv)
         while(midx == fidx);
         advance(mother, midx);
         advance(father, fidx);
-        cGen.emplace_back(*mother, *father); // make a child
+        //cGen.push_back(Brain::breed(*mother, *father)); // make a child
         if(rand()%100 < MUTATION_CHANCE) // decide whether the child should be mutant
-          cGen.back().mutate();
+          cGen.back()->mutate();
       }
     }
 
@@ -150,7 +153,6 @@ int main(int argc, char **argv)
 
 // tell the linker to link the implementation files without creating a library; probably will create one in the future and make it a PROS library template
 #include "../src/Ball.cpp"
-#include "../src/Brain.cpp"
 #include "../src/Container.cpp"
 #include "../src/Goal.cpp"
 #include "../src/Match.cpp"
@@ -159,5 +161,9 @@ int main(int argc, char **argv)
 #include "../src/MoveDerived.cpp"
 #include "../src/Robot.cpp"
 #include "../src/SensorWrapper.cpp"
+
+#include "../src/Brain.cpp"
+#include "../src/SMP.cpp"
+#include "../src/SP.cpp"
 
 #endif // GENERATION_NO_ROBOT

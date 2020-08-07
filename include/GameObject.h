@@ -8,7 +8,7 @@ class GameObject
 {
 public:
   GameObject(double xCoord, double yCoord) : x(xCoord), y(yCoord) {}
-  virtual ~GameObject() = default;
+  virtual ~GameObject() {}
 
   virtual GameObject *clone() { return new GameObject(*this); }
 

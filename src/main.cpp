@@ -33,15 +33,19 @@ void opcontrol()
 {
 	Robot bigRobot(T_MASTER, RED_ALLIANCE, 0, 0, 0, 4, 50, static_cast<double>(Chassis->getGearsetRatioPair().internalGearset)); // TODO: read from sensors
 	Robot smallRobot(T_SLAVE, RED_ALLIANCE, 0, 0, 0, 3, 50);
-	Brain brain;
-	brain.load(BRAINFILE);
+	Brain *brain = Brain::dynamic_load(BRAINFILE);
+	if(brain == NULL) // missing brain
+	{
+		// TODO: print error message
+		brain = new SP(arma::colvec{1.0, .7, .3});
+	}
 	double umax = 0; int umaxidx;
 	while(true)
 	{
 		// capture vision data, compute all possible moves
 		SensorWrapper s(NULL, 0); // TODO: implement constructor to interface with Sensor Fusion API
 		MoveContainer possibleMoves(s, -1); // TODO: implement time factor
-		arma::mat Umaster = brain.integrate(Move::toMatrix(possibleMoves, &bigRobot));
+		arma::mat Umaster = brain->integrate(Move::toMatrix(possibleMoves, &bigRobot));
 		for(int m = 0; m < Umaster.n_elem; m++)
 		{
 			if(Umaster(m) > umax)
@@ -51,7 +55,7 @@ void opcontrol()
 			}
 		}
 		possibleMoves[umaxidx]->execute(); // Do the move that the AI thinks is the best strategically
-		arma::mat Uslave = brain.integrate(Move::toMatrix(possibleMoves, &smallRobot));
+		arma::mat Uslave = brain->integrate(Move::toMatrix(possibleMoves, &smallRobot));
 		for(int m = 0; m < Uslave.n_elem; m++)
 		{
 			if(Uslave(m) > umax)
@@ -61,6 +65,8 @@ void opcontrol()
 			}
 		}
 	}
+
+	delete brain;
 }
 
 void autonomous()

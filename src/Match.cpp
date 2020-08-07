@@ -7,10 +7,10 @@ const int Match::numRobots = Match::numRedRobots + Match::numBlueRobots;
 const int Match::numBalls = 32;
 const int Match::defaultFieldSize = numGoals + numRobots + numBalls;
 
-Match::Match(Brain redBrain, Brain blueBrain)
+Match::Match(Brain *redBrain, Brain *blueBrain)
 {
-  red = redBrain;
-  blue = blueBrain;
+  red = redBrain->clone();
+  blue = blueBrain->clone();
   wp = 0;
   lp = 0;
   field = defaultField();
@@ -20,8 +20,8 @@ Match::Match(Brain redBrain, Brain blueBrain)
 
 Match::Match(const Match &cpy)
 {
-  red = Brain(cpy.red);
-  blue = Brain(cpy.blue);
+  red = cpy.red->clone();
+  blue = cpy.blue->clone();
   wp = cpy.wp;
   lp = cpy.lp;
   field = new GameObject*[cpy.fieldSize];
@@ -32,6 +32,8 @@ Match::Match(const Match &cpy)
 
 Match::~Match()
 {
+  delete red;
+  delete blue;
   for(int i = 0; i < fieldSize; i++)
     delete field[i];
   delete [] field;
@@ -100,11 +102,13 @@ void Match::reset()
   field = defaultField();
 }
 
-double Match::makemove(Robot **bots, Brain &brn, double timeRemaining)
+double Match::makemove(Robot **bots, Brain *brn, double timeRemaining)
 {
   if(bots == NULL)
     return 0;
   if(bots[0] == NULL || bots[1] == NULL)
+    return 0;
+  if(brn == NULL)
     return 0;
   if(timeRemaining <= 0)
     return 0;
@@ -112,7 +116,7 @@ double Match::makemove(Robot **bots, Brain &brn, double timeRemaining)
   double umax = 0; int umaxidx;
   MoveContainer possibleMoves(bots[0]->getViewableWrapper(field, fieldSize), timeRemaining);
 
-  arma::mat U = brn.integrate(Move::toMatrix(possibleMoves, bots[0]));
+  arma::mat U = brn->integrate(Move::toMatrix(possibleMoves, bots[0]));
   if(U.n_elem != possibleMoves.getLen())
     return 0;
   for(int m = 0; m < U.n_elem; m++)
