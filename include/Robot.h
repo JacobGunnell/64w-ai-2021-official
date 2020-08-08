@@ -15,6 +15,7 @@ enum Type {T_MASTER, T_SLAVE};
 class Robot final : public Container
 {
 public:
+  Robot() : Container(0, 0, 0) {}
   Robot(Type type, Alliance alliance, double xcoord, double ycoord, double heading_, int ballcapacity, double fov, double speed = (200.0/60.0) * 4.0*PI) : Container(xcoord, ycoord, ballcapacity), heading(heading_), _alliance(alliance), _type(type), _fov(fov), avgSpeed(speed) {}
   Robot(Type type, Alliance alliance, double xcoord, double ycoord, double heading_, int ballcapacity, double fov, Ball *b, double speed = (200.0/60.0) * 4.0*PI) : Container(xcoord, ycoord, ballcapacity), heading(heading_), _alliance(alliance), _type(type), _fov(fov), avgSpeed(speed) { balls.push_back(b); }
   ~Robot() = default;

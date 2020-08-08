@@ -8,6 +8,9 @@ shared_ptr<ChassisController> Chassis = ChassisControllerBuilder()
 	.build();
 shared_ptr<XDriveModel> Drive = dynamic_pointer_cast<XDriveModel>(Chassis->getModel());
 
+Robot bigRobot, smallRobot;
+Brain *brain;
+
 // Function prototypes
 
 
@@ -22,6 +25,24 @@ void initialize()
   else std::cout << "pre-standard C++\n";
 	cout << "Begin Initialization" << endl;
 
+	cout << "Creating internal robot objects...";
+	bigRobot = Robot(T_MASTER, RED_ALLIANCE, 0, 0, 0, 4, 50, static_cast<double>(Chassis->getGearsetRatioPair().internalGearset)); // TODO: read from sensors
+	smallRobot = Robot(T_SLAVE, RED_ALLIANCE, 0, 0, 0, 3, 50);
+	cout << "done" << endl;
+
+	cout << "Loading brain from " << BRAINFILE << "...";
+	Brain *brain = Brain::dynamic_load(BRAINFILE);
+	if(brain == NULL) // missing brain
+	{
+		cout << "failed!" << endl;
+		// TODO: print onscreen error message
+		cout << "Generating backup brain...";
+		brain = new SP(arma::colvec{1.0, .7, .3});
+		cout << "done" << endl;
+	}
+	else
+		cout << "done" << endl;
+
 	cout << "Initialization Complete" << endl;
 }
 
@@ -31,14 +52,6 @@ void competition_initialize() {}
 
 void opcontrol()
 {
-	Robot bigRobot(T_MASTER, RED_ALLIANCE, 0, 0, 0, 4, 50, static_cast<double>(Chassis->getGearsetRatioPair().internalGearset)); // TODO: read from sensors
-	Robot smallRobot(T_SLAVE, RED_ALLIANCE, 0, 0, 0, 3, 50);
-	Brain *brain = Brain::dynamic_load(BRAINFILE);
-	if(brain == NULL) // missing brain
-	{
-		// TODO: print error message
-		brain = new SP(arma::colvec{1.0, .7, .3});
-	}
 	double umax = 0; int umaxidx;
 	while(true)
 	{

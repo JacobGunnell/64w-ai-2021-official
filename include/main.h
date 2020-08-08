@@ -21,7 +21,7 @@
 #define VERSION_INFO ""
 #define VERSION_YEAR 2021
 
-#define BRAINFILE "/usd/brain0"
+#define BRAINFILE "/usd/brain0.sp"
 
 /**
  * If defined, some commonly used enums will have preprocessor macros which give

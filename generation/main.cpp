@@ -73,9 +73,8 @@ int main(int argc, char **argv)
     cout << "loaded " << numBrains << " brains" << endl;
   }
   cout << "Randomly generating " << POPULATION - numBrains << " brains to fill array... ";
-  // TODO
-  //for(int i = numBrains; i < POPULATION; i++)
-  //  cGen.push_front(Brain(N_INPUTS, N_HIDDEN));
+  for(int i = numBrains; i < POPULATION; i++)
+    cGen.push_front(Brain(N_INPUTS, N_HIDDEN));
   cout << "done" << endl;
 
   for(int gen = 0; gen < GEN_MAX; gen++)
@@ -115,7 +114,7 @@ int main(int argc, char **argv)
       cout << " saving  ...";
       list<Brain *>::iterator iter = cGen.begin();
       for(int i = 0; i < cGen.size(); i++)
-        (*iter++)->save(OFPATH + "/brain" + to_string(i) + ".brn");
+        (*iter++)->save(OFPATH + "/brain" + to_string(i));
     }
     else
     {

@@ -41,7 +41,7 @@ arma::mat SMP::integrate(arma::mat X)
 
 bool SMP::save(string filename)
 {
-  ofstream stream(filename, ios_base::binary);
+  ofstream stream(filename + getExtension(), ios_base::binary);
   return
   WL1.save(stream) &&
   WL2.save(stream) &&

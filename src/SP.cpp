@@ -12,7 +12,7 @@ arma::mat SP::integrate(arma::mat inputs)
 
 bool SP::save(string filename)
 {
-  ofstream stream(filename, ios_base::binary);
+  ofstream stream(filename + getExtension(), ios_base::binary);
   return W.save(stream);
 }
 
