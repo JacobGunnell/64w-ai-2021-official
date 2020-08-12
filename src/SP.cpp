@@ -5,7 +5,7 @@ SP::SP(int numInputs)
   W = arma::colvec(numInputs, arma::fill::randu);
 }
 
-arma::mat SP::integrate(arma::mat inputs)
+arma::mat SP::integrate(arma::mat inputs) // TODO: possible problem with matrix dimensions? add some input validation
 {
   return inputs * W;
 }

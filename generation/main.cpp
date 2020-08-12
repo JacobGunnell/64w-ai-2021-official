@@ -42,8 +42,7 @@ int main(int argc, char **argv)
   arma::arma_rng::set_seed_random();
 
   // Initialize Generation 0
-  const int N_INPUTS = 3;
-  const int N_HIDDEN = 1;
+  const int N_INPUTS = MoveData().vectorize().n_elem;
 
   list<Brain *> cGen; // current generation
   int roundSize;
@@ -74,7 +73,7 @@ int main(int argc, char **argv)
   }
   cout << "Randomly generating " << POPULATION - numBrains << " brains to fill array... ";
   for(int i = numBrains; i < POPULATION; i++)
-    cGen.push_front(Brain(N_INPUTS, N_HIDDEN));
+    cGen.push_front(Brain::random(N_INPUTS));
   cout << "done" << endl;
 
   for(int gen = 0; gen < GEN_MAX; gen++)
@@ -114,7 +113,7 @@ int main(int argc, char **argv)
       cout << " saving  ...";
       list<Brain *>::iterator iter = cGen.begin();
       for(int i = 0; i < cGen.size(); i++)
-        (*iter++)->save(OFPATH + "/brain" + to_string(i));
+        (*iter++)->save(OFPATH + "/brain" + to_string(i)); // TODO: better file naming pattern
     }
     else
     {
@@ -132,7 +131,7 @@ int main(int argc, char **argv)
         while(midx == fidx);
         advance(mother, midx);
         advance(father, fidx);
-        //cGen.push_back(Brain::breed(*mother, *father)); // make a child
+        cGen.push_back(Brain::breed(*mother, *father)); // make a child
         if(rand()%100 < MUTATION_CHANCE) // decide whether the child should be mutant
           cGen.back()->mutate();
       }

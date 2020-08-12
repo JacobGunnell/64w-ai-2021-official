@@ -18,6 +18,8 @@ public:
 
   Color getColor() const { return _color; }
 
+  bool operator==(Ball &rhs) { return GameObject::operator==(rhs) && _color == rhs._color; }
+
 private:
   Color _color;
 };

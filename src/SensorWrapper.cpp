@@ -1,70 +1,64 @@
 #include "SensorWrapper.h"
 
-SensorWrapper::SensorWrapper(GameObject **objs_, int numObjs_)
+SensorWrapper::SensorWrapper(GameObject **objs_, int numObjs)
 {
   if(objs_ != NULL)
   {
-    numObjs = numObjs_;
-    objs = new GameObject *[numObjs];
+    objs.reserve(numObjs);
     for(int i = 0; i < numObjs; i++)
     {
       if(objs_[i] != NULL)
-        objs[i] = objs_[i]->clone();
-      else
-        objs[i] = NULL;
+        objs.push_back(objs_[i]->clone());
     }
-  }
-  else
-  {
-    objs = NULL;
-    numObjs = 0;
-  }
-}
-
-SensorWrapper::SensorWrapper(const SensorWrapper &cpy)
-{
-  if(cpy.objs != NULL)
-  {
-    numObjs = cpy.numObjs;
-    objs = new GameObject *[numObjs];
-    for(int i = 0; i < numObjs; i++)
-    {
-      if(cpy.objs[i] != NULL)
-        objs[i] = cpy.objs[i]->clone();
-      else
-        objs[i] = NULL;
-    }
-  }
-  else
-  {
-    objs = NULL;
-    numObjs = 0;
   }
 }
 
 SensorWrapper::~SensorWrapper()
 {
-  for(int i = 0; i < numObjs; i++)
-    delete objs[i];
-  delete [] objs;
+  for(vector<GameObject *>::iterator it = objs.begin(); it != objs.end(); ++it)
+    delete *it;
+}
+
+void SensorWrapper::push(GameObject *obj)
+{
+  if(obj != NULL)
+  {
+    bool dup = false;
+    for(vector<GameObject *>::iterator it = objs.begin(); it != objs.end(); ++it)
+    {
+      if(**it == *obj)
+      {
+        dup = true;
+        break;
+      }
+    }
+    if(!dup)
+      objs.push_back(obj);
+  }
+}
+
+void SensorWrapper::append(vector<GameObject *> app)
+{
+  for(vector<GameObject *>::iterator it = app.begin(); it != app.end(); ++it)
+    push(*it);
 }
 
 SensorWrapper SensorWrapper::operator+(SensorWrapper rhs)
 {
-  GameObject **o = new GameObject*[numObjs + rhs.numObjs]; // allocate maximum required memory
+  GameObject **o = new GameObject*[objs.size() + rhs.objs.size()]; // allocate maximum required memory
   int i;
-  for(i = 0; i < numObjs; i++) // fill with this wrapper's objects
+  for(i = 0; i < objs.size(); i++) // fill with this wrapper's objects
     o[i] = objs[i];
-  for(int j = 0; j < rhs.numObjs; j++) // fill with other wrapper's objects, checking for duplicates
+  for(int j = 0; j < rhs.objs.size(); j++) // fill with other wrapper's objects, checking for duplicates
   {
     bool dup = false;
     GameObject *object = rhs.objs[j];
-    for(int k = 0; k < numObjs && !dup; k++)
+    for(int k = 0; k < objs.size() && !dup; k++)
       dup = objs[k] == object;
     if(!dup)
       o[i++] = object;
   }
-  if(i < numObjs + rhs.numObjs)
-    delete [] (o + i);
-  return SensorWrapper(o, i);
+  SensorWrapper s(o, i);
+  delete [] o;
+  return s;
 }

@@ -114,7 +114,8 @@ double Match::makemove(Robot **bots, Brain *brn, double timeRemaining)
     return 0;
 
   double umax = 0; int umaxidx;
-  MoveContainer possibleMoves(bots[0]->getViewableWrapper(field, fieldSize), timeRemaining);
+  MoveContainer possibleMoves;
+  //MoveContainer possibleMoves(bots[0]->getViewableWrapper(field, fieldSize), timeRemaining); // TODO: problem line
 
   arma::mat U = brn->integrate(Move::toMatrix(possibleMoves, bots[0]));
   if(U.n_elem != possibleMoves.getLen())

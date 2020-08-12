@@ -1,5 +1,6 @@
 #include "main.h"
 #include "Hardware.h"
+#include "GUI.h"
 
 // Globals
 shared_ptr<ChassisController> Chassis = ChassisControllerBuilder()
@@ -25,23 +26,28 @@ void initialize()
   else std::cout << "pre-standard C++\n";
 	cout << "Begin Initialization" << endl;
 
+	gui_loading_start();
+
 	cout << "Creating internal robot objects...";
 	bigRobot = Robot(T_MASTER, RED_ALLIANCE, 0, 0, 0, 4, 50, static_cast<double>(Chassis->getGearsetRatioPair().internalGearset)); // TODO: read from sensors
 	smallRobot = Robot(T_SLAVE, RED_ALLIANCE, 0, 0, 0, 3, 50);
 	cout << "done" << endl;
 
-	cout << "Loading brain from " << BRAINFILE << "...";
+	cout << "Loading brain from " << BRAINFILE << "..."; // TODO: implement on-screen selector (maybe have it read from a default.pref for default brain?)
 	Brain *brain = Brain::dynamic_load(BRAINFILE);
 	if(brain == NULL) // missing brain
 	{
 		cout << "failed!" << endl;
-		// TODO: print onscreen error message
 		cout << "Generating backup brain...";
 		brain = new SP(arma::colvec{1.0, .7, .3});
 		cout << "done" << endl;
+		gui_error(string("Failed to load brainfile at ") + BRAINFILE + ", generated backup in place");
 	}
 	else
 		cout << "done" << endl;
+
+	gui_loading_stop();
+	gui_main();
 
 	cout << "Initialization Complete" << endl;
 }
@@ -53,10 +59,11 @@ void competition_initialize() {}
 void opcontrol()
 {
 	double umax = 0; int umaxidx;
+	SensorWrapper s;
 	while(true)
 	{
 		// capture vision data, compute all possible moves
-		SensorWrapper s(NULL, 0); // TODO: implement constructor to interface with Sensor Fusion API
+		// TODO: create seperate task for updating s with latest sensor data
 		MoveContainer possibleMoves(s, -1); // TODO: implement time factor
 		arma::mat Umaster = brain->integrate(Move::toMatrix(possibleMoves, &bigRobot));
 		for(int m = 0; m < Umaster.n_elem; m++)

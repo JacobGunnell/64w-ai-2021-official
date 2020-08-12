@@ -3,12 +3,15 @@
 
 #include <string>
 #include <fstream>
+#include <random>
+#include <ctime>
 using namespace std;
 
 #include "armadillo"
 
 class Brain;
-Brain *_dynamic_load(string);
+Brain *_brain_dynamic_load(string);
+Brain *_brain_random(int);
 
 class Brain
 {
@@ -22,7 +25,8 @@ public:
   virtual Brain *clone() = 0;
 
   static Brain *breed(Brain *, Brain *);
-  static Brain *dynamic_load(string file) { return _dynamic_load(file); }
+  static Brain *dynamic_load(string file) { return _brain_dynamic_load(file); }
+  static Brain *random(int inputSize) { return _brain_random(inputSize); }
 };
 
 #endif // BRAIN_H

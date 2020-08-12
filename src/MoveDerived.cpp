@@ -5,6 +5,9 @@
 
 MoveData Cycle::getData(Robot *robot)
 {
+  if(robot == NULL)
+    return MoveData();
+
   Color c = static_cast<Color>(robot->getAlliance());
   MoveData m;
   int ourTotalBalls = robot->numBalls(c) + goal->numBalls(c);
@@ -24,6 +27,9 @@ bool Cycle::vexecute(Robot *robot)
 
 MoveData Intake::getData(Robot *robot)
 {
+  if(robot == NULL)
+    return MoveData();
+
   MoveData m;
   m.p = 0;
   m.t = ball->distFrom(*robot) / robot->avgSpeed; // TODO: implement better time factor estimate
@@ -37,14 +43,20 @@ bool Intake::vexecute(Robot *robot)
   return robot->pushBall(ball);
 }
 
-ConnectRow::ConnectRow(int row_, Goal *goals_[9]) : Move(), row(row_)
+ConnectRow::ConnectRow(int row_, Goal **goals_) : Move(), row(row_)
 {
-  for(int i = 0; i < NUM_GOALS; i++)
-    goals[i] = goals_[Goal::connectableRowIndices[row][i]];
+  Goal *g;
+  if(goals_ != NULL)
+    for(int i = 0; i < NUM_GOALS; i++)
+      if((g = goals_[Goal::connectableRowIndices[row][i]]) != NULL)
+        goals[i] = g;
 }
 
 MoveData ConnectRow::getData(Robot *robot)
 {
+  if(robot == NULL)
+    return MoveData();
+
   int x = robot->x;
   int y = robot->y;
 

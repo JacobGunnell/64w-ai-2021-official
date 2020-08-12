@@ -12,6 +12,7 @@ public:
   MoveContainer() : moves(NULL), len(0) {}
   MoveContainer(Move **, int);
   MoveContainer(SensorWrapper, double);
+  MoveContainer(const MoveContainer &cpy) : MoveContainer(cpy.moves, cpy.len) {}
   ~MoveContainer();
 
   int getLen() const { return len; }

@@ -12,6 +12,9 @@ public:
   SP(arma::colvec weights) : W(weights) {}
   ~SP() {}
 
+  void setW(arma::colvec WNew) { W = WNew; }
+  arma::colvec getW() const { return W; }
+
   arma::mat integrate(arma::mat) override;
   bool save(string) override;
   bool load(string) override;

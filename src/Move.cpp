@@ -15,17 +15,18 @@ Move::~Move()
 arma::mat Move::toMatrix(Move **m, const int len, Robot *robot)
 {
   arma::mat matrix;
-  if(m != NULL)
+  if(m != NULL && robot != NULL)
   {
     for(int i = 0; i < len; i++)
+    {
       if(m[i] != NULL)
-        matrix.insert_cols(i, m[i]->getData(robot).vectorize());
+        matrix.insert_rows(i, m[i]->getData(robot).vectorize());
       else
-        matrix.insert_cols(i, MoveData().vectorize());
+        matrix.insert_rows(i, MoveData().vectorize());
+    }
+    return matrix;
   }
-  else
-    matrix.reset();
-  return matrix;
+  return MoveData().vectorize();
 }
 
 arma::mat Move::toMatrix(MoveContainer m, Robot *robot)
