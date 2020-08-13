@@ -14,7 +14,7 @@ class SMP : public Brain
 public:
   SMP() {}
   SMP(int, int); // create a random brain with specific dimensions
-  SMP(int inputSize) : SMP(inputSize, 3) {}
+  SMP(int inputSize) : SMP(inputSize, 3) {} // TODO: random number of hidden cells
   SMP(arma::mat &, arma::mat &, arma::mat &); // create a brain from matrices
   ~SMP() {}
 

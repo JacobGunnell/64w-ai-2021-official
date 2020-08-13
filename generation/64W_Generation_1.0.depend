@@ -39,7 +39,7 @@
 1590107546 source:c:\users\jacob\documents\prosprograms\64w-ai-rev0-2021\generation\src\mat.cpp
 	"mat.h"
 
-1597166203 source:c:\users\jacob\documents\prosprograms\64w-ai-rev0-2021\generation\main.cpp
+1597342253 source:c:\users\jacob\documents\prosprograms\64w-ai-rev0-2021\generation\main.cpp
 	<iostream>
 	<list>
 	<random>
@@ -1857,11 +1857,12 @@
 
 1466097661 c:\users\jacob\documents\prosprograms\64w-ai-rev0-2021\include\armadillo_bits\compiler_setup_post.hpp
 
-1596947361 c:\users\jacob\documents\prosprograms\64w-ai-rev0-2021\include\brain.h
+1597338003 c:\users\jacob\documents\prosprograms\64w-ai-rev0-2021\include\brain.h
 	<string>
 	<fstream>
 	<random>
 	<ctime>
+	<typeinfo>
 	"armadillo"
 
 1596824111 c:\users\jacob\documents\prosprograms\64w-ai-rev0-2021\include\match.h
@@ -1875,7 +1876,7 @@
 	<ctime>
 	<chrono>
 
-1597166191 c:\users\jacob\documents\prosprograms\64w-ai-rev0-2021\src\brain.cpp
+1597338887 c:\users\jacob\documents\prosprograms\64w-ai-rev0-2021\src\brain.cpp
 	"Brain.h"
 	"SMP.h"
 	"SP.h"
@@ -3355,7 +3356,7 @@
 1597161616 c:\users\jacob\documents\prosprograms\64w-ai-rev0-2021\include\sp.h
 	"Brain.h"
 
-1597162530 c:\users\jacob\documents\prosprograms\64w-ai-rev0-2021\include\smp.h
+1597341912 c:\users\jacob\documents\prosprograms\64w-ai-rev0-2021\include\smp.h
 	<string>
 	<fstream>
 	"Brain.h"

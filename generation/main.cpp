@@ -17,17 +17,22 @@ using namespace std::chrono;
 
 #include "CLI11.hpp"
 
+template<typename T> void shuffle(list<T> &);
+
 int main(int argc, char **argv)
 {
   CLI::App app{"Generation, a program to breed a competent AI brain using an evolutional framework."};
-  int POPULATION = 32, ELITE = 4, MUTATION_CHANCE = 20, GEN_MAX;
+  int POPULATION = 32, ELITE = 4, MUTATION_CHANCE = 20, GEN_MAX, RAND = 4;
   string OFPATH, IFPATH;
+  bool SEXUAL = false;
   app.add_option("-p", POPULATION, "Initial Population", true)->check([](const string &str){ if(ceil(log2(stoi(str))) != floor(log2(stoi(str)))) return str + string(" is not a power of 2"); else return string(); });
   app.add_option("-e", ELITE, "Elite Population", true)->check([](const string &str){ if(ceil(log2(stoi(str))) != floor(log2(stoi(str)))) return str + string(" is not a power of 2"); else return string(); });
   app.add_option("-m", MUTATION_CHANCE, "Mutation Chance", true)->check(CLI::Range(0, 100));
+  app.add_option("-r", RAND, "Number of Random brains to generate each generation"); // TODO: check data
   app.add_option("-g", GEN_MAX, "Number of Generations to run")->required();
   app.add_option("-o", OFPATH, "Directory to save to")->check(CLI::ExistingDirectory);
   app.add_option("-i", IFPATH, "Directory to read initial population from")->check(CLI::ExistingDirectory);
+  app.add_flag("--sexual", SEXUAL, "Use sexual reproduction over asexual reproduction (not yet implemented)");
   CLI11_PARSE(app, argc, argv);
   cout << "64W Generation v1.0" << endl
        << "Starting " << GEN_MAX << " generation run with initial population " << POPULATION;
@@ -119,22 +124,41 @@ int main(int argc, char **argv)
     {
       // Elite get to breed the next generation
       cout << " breeding...";
-      while(cGen.size() < POPULATION)
+      if(SEXUAL)
       {
-        mother = cGen.begin();
-        father = cGen.begin();
-        midx = rand()%ELITE; // pick a mother and a father that are not the same
-        do
+        while(cGen.size() < POPULATION - RAND)
         {
-          fidx = rand()%ELITE;
+          mother = cGen.begin();
+          father = cGen.begin();
+          midx = rand()%ELITE; // pick a mother and a father that are not the same
+          do
+          {
+            fidx = rand()%ELITE;
+          }
+          while(midx == fidx);
+          advance(mother, midx);
+          advance(father, fidx);
+          cGen.push_back(Brain::breed(*mother, *father)); // make a child
+          if(rand()%100 < MUTATION_CHANCE) // decide whether the child should be mutant
+            cGen.back()->mutate();
         }
-        while(midx == fidx);
-        advance(mother, midx);
-        advance(father, fidx);
-        cGen.push_back(Brain::breed(*mother, *father)); // make a child
-        if(rand()%100 < MUTATION_CHANCE) // decide whether the child should be mutant
-          cGen.back()->mutate();
+        while(cGen.size() < POPULATION)
+          cGen.push_back(Brain::random(N_INPUTS));
       }
+      else
+      {
+        while(cGen.size() < POPULATION - RAND)
+        {
+          mother = cGen.begin();
+          advance(mother, rand()%ELITE);
+          cGen.push_back((*mother)->clone());
+          cGen.back()->mutate();
+        }
+        while(cGen.size() < POPULATION)
+          cGen.push_back(Brain::random(N_INPUTS));
+      }
+
+      shuffle(cGen);
     }
 
     high_resolution_clock::time_point stop = high_resolution_clock::now();
@@ -147,6 +171,14 @@ int main(int argc, char **argv)
   cout << GEN_MAX << " generation run complete in " << duration.count() / 1000.0 << " seconds." << endl;
 
   return 0;
+}
+
+template<typename T> void shuffle(list<T> &lst) // shuffle contents of a list
+{
+  vector<reference_wrapper<const T>> vec(lst.begin(), lst.end());
+  shuffle(vec.begin(), vec.end(), mt19937{random_device{}()});
+  list<T> shuffled_list{vec.begin(), vec.end()};
+  lst.swap(shuffled_list);
 }
 
 // tell the linker to link the implementation files without creating a library; probably will create one in the future and make it a PROS library template

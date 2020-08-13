@@ -1,16 +1,20 @@
 #include "Brain.h"
 
-Brain *Brain::breed(Brain *mother, Brain *father)
-{
-  return NULL; // TODO
-}
-
 
 // everything below this line is ugly, but it was the only way
 
 // add an include for every derived class of Brain...
 #include "SMP.h"
 #include "SP.h"
+
+Brain *_brain_breed(Brain *mother, Brain *father)
+{
+  if(mother != NULL && father != NULL)
+  {
+    // TODO
+  }
+  return NULL;
+}
 
 #define _BRAIN_DYNAMIC_LOAD(c, s, e) \
 if(e == c::getExtension()) \
@@ -34,7 +38,6 @@ Brain *_brain_random(int inputSize)
 {
   static const int NUM_DERIVED = 2; // ...increment this...
 
-  srand(time(0));
   switch(rand() % NUM_DERIVED) // ...and add a new case
   {
   case 0:

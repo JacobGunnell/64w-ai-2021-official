@@ -39,7 +39,7 @@ void initialize()
 	{
 		cout << "failed!" << endl;
 		cout << "Generating backup brain...";
-		brain = new SP(arma::colvec{1.0, .7, .3});
+		brain = new SP(arma::colvec{1.0, .7, .3}); // TODO: better backup brain
 		cout << "done" << endl;
 		gui_error(string("Failed to load brainfile at ") + BRAINFILE + ", generated backup in place");
 	}

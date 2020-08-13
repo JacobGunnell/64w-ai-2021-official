@@ -5,11 +5,13 @@
 #include <fstream>
 #include <random>
 #include <ctime>
+#include <typeinfo>
 using namespace std;
 
 #include "armadillo"
 
 class Brain;
+Brain *_brain_breed(Brain *, Brain *);
 Brain *_brain_dynamic_load(string);
 Brain *_brain_random(int);
 
@@ -24,7 +26,7 @@ public:
   virtual void mutate() = 0;
   virtual Brain *clone() = 0;
 
-  static Brain *breed(Brain *, Brain *);
+  static Brain *breed(Brain *mother, Brain *father) { return _brain_breed(mother, father); }
   static Brain *dynamic_load(string file) { return _brain_dynamic_load(file); }
   static Brain *random(int inputSize) { return _brain_random(inputSize); }
 };
