@@ -99,13 +99,15 @@ int main(int argc, char **argv)
         Match m(*red, *blue); // set red and blue teams
         if(m.run() == RED_ALLIANCE) // run it and kill the loser
         {
+          delete *blue;
           blue = make_reverse_iterator(cGen.erase(next(blue).base()));
-          red++;
+          ++red;
         }
         else
         {
+          delete *red;
           red = cGen.erase(red);
-          blue++;
+          ++blue;
         }
         totalPoints += m.wp + m.lp;
         numPlays += 2;
@@ -189,6 +191,7 @@ template<typename T> void shuffle(list<T> &lst) // shuffle contents of a list
 #include "../src/Move.cpp"
 #include "../src/MoveContainer.cpp"
 #include "../src/MoveDerived.cpp"
+#include "../src/MoveSet.cpp"
 #include "../src/Robot.cpp"
 #include "../src/SensorWrapper.cpp"
 

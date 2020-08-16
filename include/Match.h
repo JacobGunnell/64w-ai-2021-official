@@ -38,7 +38,7 @@ public:
 private:
   Brain *red;
   Brain *blue;
-  GameObject **field;
+  GameObject **field; // TODO: replace field with a SensorWrapper?
   int fieldSize;
   default_random_engine generator;
 

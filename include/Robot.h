@@ -3,7 +3,7 @@
 
 
 #include "Container.h"
-#include "SensorWrapper.h"
+#include "Ball.h"
 #include <cmath>
 #ifndef PI
 #define PI 3.14159265358979323846
@@ -12,7 +12,9 @@
 enum Alliance {RED_ALLIANCE=0, BLUE_ALLIANCE=1, NEITHER_ALLIANCE=-1};
 enum Type {T_MASTER, T_SLAVE};
 
-class Robot final : public Container
+class SensorWrapper;
+
+class Robot final : public Container // TODO: ensure that opposing alliance's balls are ejected when pushed past slot 1 (trapdoor indexer)
 {
 public:
   Robot() : Container(0, 0, 0) {}
@@ -39,5 +41,7 @@ private:
   Type _type;
   double _fov;
 };
+
+#include "SensorWrapper.h"
 
 #endif // ROBOT_H

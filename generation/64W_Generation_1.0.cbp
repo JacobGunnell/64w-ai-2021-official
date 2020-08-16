@@ -2,16 +2,16 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="64W_Generation" />
+		<Option title="generation" />
 		<Option pch_mode="2" />
 		<Option compiler="gnu_gcc_compiler_x64" />
 		<Build>
 			<Target title="Debug">
-				<Option output="bin/Debug/64W_Generation_1" prefix_auto="1" extension_auto="1" />
+				<Option output="bin/Debug/generation" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gnu_gcc_compiler_x64_with_gcc_101" />
-				<Option parameters="-g 10 -p 64 -i initial -o elite" />
+				<Option parameters="-g 20 -p 64 -i initial -o elite" />
 				<Compiler>
 					<Add option="-march=corei7-avx" />
 					<Add option="-std=c++1z" />

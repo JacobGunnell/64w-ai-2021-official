@@ -20,9 +20,58 @@ MoveData Cycle::getData(Robot *robot)
 
 bool Cycle::vexecute(Robot *robot)
 {
+  // This isn't totally true-to-life, but it's faster
+  // Essentially all of our balls (up to 3) end up in the goal and the rest end up in the robot, and all of theirs end up on the ground somewhere
   Color c = static_cast<Color>(robot->getAlliance());
+  int totalBalls = robot->numBalls() + goal->numBalls();
   int ourTotalBalls = robot->numBalls(c) + goal->numBalls(c);
+  const int GOAL_CAPACITY = goal->containerSize();
+
   robot->moveTo(goal);
+
+  // Dump / sort balls
+  deque<Ball *> ourBalls, theirBalls;
+  deque<Ball *> temp = goal->dump();
+  for(deque<Ball *>::iterator it = temp.begin(); it != temp.end(); ++it)
+  {
+    if((*it)->getColor() == c)
+      ourBalls.push_back(*it);
+    else
+      theirBalls.push_back(*it);
+  }
+  temp = robot->dump();
+  for(deque<Ball *>::iterator it = temp.begin(); it != temp.end(); ++it)
+  {
+    if((*it)->getColor() == c)
+      ourBalls.push_back(*it);
+    else
+      theirBalls.push_back(*it);
+  }
+
+  // Put balls in the goal / robot
+  if(ourBalls.size() <= GOAL_CAPACITY)
+    for(deque<Ball *>::iterator it = ourBalls.begin(); it != ourBalls.end(); ++it)
+      goal->pushBall(*it);
+  else
+  {
+    deque<Ball *>::iterator it;
+    for(it = ourBalls.begin(); it != ourBalls.begin() + GOAL_CAPACITY; ++it)
+      goal->pushBall(*it);
+    for( ; it != ourBalls.end(); ++it)
+      robot->pushBall(*it);
+  }
+
+  // Scatter their balls elsewhere (TODO)
+  //for(deque<Ball *>::iterator it = theirBalls.begin(); it != theirBalls.end(); ++it)
+
+  return true; // TODO: are there any cases where this would fail?
+}
+
+bool Cycle::viable(Robot *robot)
+{
+  Color c = static_cast<Color>(robot->getAlliance());
+  return goal->numBalls(!c) != 0 || // either the opposing alliance has some balls in the goal
+    (!goal->full() && !robot->empty()); // or the goal is ours and we have more to score
 }
 
 MoveData Intake::getData(Robot *robot)
@@ -43,6 +92,12 @@ bool Intake::vexecute(Robot *robot)
   return robot->pushBall(ball);
 }
 
+bool Intake::viable(Robot *robot)
+{
+  return !robot->full();
+}
+
+/*
 ConnectRow::ConnectRow(int row_, Goal **goals_) : Move(), row(row_)
 {
   Goal *g;
@@ -85,7 +140,7 @@ bool ConnectRow::vexecute(Robot *robot) // TODO
 {
 
 }
-
+*/
 
 #ifndef GENERATION_NO_ROBOT
 // Instructions for execution with a physical robot via okapilib (TODO)
@@ -100,11 +155,6 @@ bool Intake::execute()
 
 }
 
-bool ConnectRow::execute()
-{
-
-}
-
 bool ZeroMove::execute() { return true; }
 
 #else
@@ -113,7 +163,6 @@ bool ZeroMove::execute() { return true; }
 
 bool Cycle::execute() { return false; }
 bool Intake::execute() { return false; }
-bool ConnectRow::execute() { return false; }
 bool ZeroMove::execute() { return false; }
 
 #endif

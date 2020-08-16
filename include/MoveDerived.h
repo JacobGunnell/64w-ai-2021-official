@@ -15,6 +15,7 @@ public:
   MoveData getData(Robot *) override;
   bool execute() override;
   bool vexecute(Robot *) override;
+  bool viable(Robot *) override;
 
   Cycle *clone() override { return new Cycle(*this); }
 
@@ -29,13 +30,15 @@ public:
   MoveData getData(Robot *) override;
   bool execute() override;
   bool vexecute(Robot *) override;
+  bool viable(Robot *) override;
 
   Intake *clone() override { return new Intake(*this); }
 
   Ball *ball;
 };
 
-class ConnectRow : public Move
+// TODO: delete for good
+/*class ConnectRow : public Move
 {
 public:
   ConnectRow(int, Goal *[9]);
@@ -49,7 +52,7 @@ public:
   int row;
   static const int NUM_GOALS = 3;
   Goal *goals[NUM_GOALS];
-};
+};*/
 
 class ZeroMove : public Move
 {
@@ -59,6 +62,7 @@ public:
   MoveData getData(Robot *) override { return MoveData(); }
   bool execute() override;
   bool vexecute(Robot *) override { return true; }
+  bool viable(Robot *) override { return true; }
 
   ZeroMove *clone() override { return new ZeroMove(*this); }
 };

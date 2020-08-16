@@ -69,7 +69,7 @@ Alliance Match::run()
   }
   else
   {
-    wp = pred;
+    wp = lp = pred;
     return NEITHER_ALLIANCE;
   }
 }
@@ -96,6 +96,10 @@ void Match::reset()
 {
   wp = 0;
   lp = 0;
+  delete red;
+  red = NULL;
+  delete blue;
+  blue = NULL;
   for(int i = 0; i < defaultFieldSize; i++)
     delete field[i];
   delete [] field;
@@ -114,11 +118,10 @@ double Match::makemove(Robot **bots, Brain *brn, double timeRemaining)
     return 0;
 
   double umax = 0; int umaxidx;
-  MoveContainer possibleMoves;
-  //MoveContainer possibleMoves(bots[0]->getViewableWrapper(field, fieldSize), timeRemaining); // TODO: problem line
+  MoveContainer possibleMoves(bots[0]->getViewableWrapper(field, fieldSize), bots[0], timeRemaining);
 
   arma::mat U = brn->integrate(Move::toMatrix(possibleMoves, bots[0]));
-  if(U.n_elem != possibleMoves.getLen())
+  if(U.n_elem != possibleMoves.size())
     return 0;
   for(int m = 0; m < U.n_elem; m++)
   {

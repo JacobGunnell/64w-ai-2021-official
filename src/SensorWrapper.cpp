@@ -1,22 +1,38 @@
 #include "SensorWrapper.h"
 
-SensorWrapper::SensorWrapper(GameObject **objs_, int numObjs)
+SensorWrapper::SensorWrapper(GameObject **objs, int numObjs)
 {
-  if(objs_ != NULL)
-  {
-    objs.reserve(numObjs);
+  if(objs != NULL)
     for(int i = 0; i < numObjs; i++)
-    {
-      if(objs_[i] != NULL)
-        objs.push_back(objs_[i]->clone());
-    }
-  }
+      if(objs[i] != NULL)
+        push(objs[i]);
 }
+
+#define _WRAPPER_DYNAMIC_DELETE(c, a) \
+for(vector<c *>::iterator it = a.begin(); it != a.end(); ++it) \
+  delete *it;
 
 SensorWrapper::~SensorWrapper()
 {
-  for(vector<GameObject *>::iterator it = objs.begin(); it != objs.end(); ++it)
-    delete *it;
+  _WRAPPER_DYNAMIC_DELETE(Ball, balls)
+  _WRAPPER_DYNAMIC_DELETE(Goal, goals)
+  _WRAPPER_DYNAMIC_DELETE(Robot, robots)
+}
+
+#define _WRAPPER_DYNAMIC_PUSH(c, a) \
+if(typeid(*obj) == typeid(c)) \
+{ \
+  for(vector<c *>::iterator it = a.begin(); it != a.end(); ++it) \
+  { \
+    if(**it == *reinterpret_cast<c *>(obj)) \
+    { \
+      dup = true; \
+      break; \
+    } \
+  } \
+  if(!dup) \
+    a.push_back(reinterpret_cast<c *>(obj->clone())); \
+  return; \
 }
 
 void SensorWrapper::push(GameObject *obj)
@@ -24,16 +40,9 @@ void SensorWrapper::push(GameObject *obj)
   if(obj != NULL)
   {
     bool dup = false;
-    for(vector<GameObject *>::iterator it = objs.begin(); it != objs.end(); ++it)
-    {
-      if(**it == *obj)
-      {
-        dup = true;
-        break;
-      }
-    }
-    if(!dup)
-      objs.push_back(obj);
+    _WRAPPER_DYNAMIC_PUSH(Ball, balls)
+    _WRAPPER_DYNAMIC_PUSH(Goal, goals)
+    _WRAPPER_DYNAMIC_PUSH(Robot, robots)
   }
 }
 
@@ -43,22 +52,43 @@ void SensorWrapper::append(vector<GameObject *> app)
     push(*it);
 }
 
+void SensorWrapper::append(vector<Ball *> app)
+{
+  for(vector<Ball *>::iterator it = app.begin(); it != app.end(); ++it)
+    push(*it);
+}
+
+void SensorWrapper::append(vector<Goal *> app)
+{
+  for(vector<Goal *>::iterator it = app.begin(); it != app.end(); ++it)
+    push(*it);
+}
+
+void SensorWrapper::append(vector<Robot *> app)
+{
+  for(vector<Robot *>::iterator it = app.begin(); it != app.end(); ++it)
+    push(*it);
+}
+
 SensorWrapper SensorWrapper::operator+(SensorWrapper rhs)
 {
-  GameObject **o = new GameObject*[objs.size() + rhs.objs.size()]; // allocate maximum required memory
-  int i;
-  for(i = 0; i < objs.size(); i++) // fill with this wrapper's objects
-    o[i] = objs[i];
-  for(int j = 0; j < rhs.objs.size(); j++) // fill with other wrapper's objects, checking for duplicates
-  {
-    bool dup = false;
-    GameObject *object = rhs.objs[j];
-    for(int k = 0; k < objs.size() && !dup; k++)
-      dup = objs[k] == object;
-    if(!dup)
-      o[i++] = object;
-  }
-  SensorWrapper s(o, i);
-  delete [] o;
+  SensorWrapper s(*this);
+  s.append(rhs.getBalls());
+  s.append(rhs.getGoals());
+  s.append(rhs.getRobots());
   return s;
+}
+
+GameObject *SensorWrapper::operator[](int i)
+{
+  // Treat the 3 vectors as a continuous array
+  if(i >= 0 && i < balls.size())
+    return balls[i];
+  i -= balls.size();
+  if(i >= 0 && i < goals.size())
+    return goals[i];
+  i -= goals.size();
+  if(i >= 0 && i < robots.size())
+    return robots[i];
+  return NULL;
 }

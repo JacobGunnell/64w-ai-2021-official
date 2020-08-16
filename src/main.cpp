@@ -64,7 +64,7 @@ void opcontrol()
 	{
 		// capture vision data, compute all possible moves
 		// TODO: create seperate task for updating s with latest sensor data
-		MoveContainer possibleMoves(s, -1); // TODO: implement time factor
+		MoveContainer possibleMoves(s, &bigRobot, -1); // TODO: implement time factor; TODO: should robot information be included in sensorwrapper?
 		arma::mat Umaster = brain->integrate(Move::toMatrix(possibleMoves, &bigRobot));
 		for(int m = 0; m < Umaster.n_elem; m++)
 		{

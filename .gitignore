@@ -19,3 +19,4 @@ temp.errors
 *.cbp
 *.depend
 *.layout
+CppCheckResults.xml
