@@ -27,7 +27,7 @@ public:
   Alliance getAlliance() const { return _alliance; }
   Type getType() const { return _type; }
   double getFOV() const { return _fov; }
-  void moveTo(double x_, double y_, double h_) { x = x_; y = y_; heading = h_; }
+  void moveTo(double x_, double y_, double h_) { GameObject::moveTo(x_, y_); heading = h_; }
   void moveTo(double x_, double y_) { GameObject::moveTo(x_, y_); }
   void moveTo(GameObject &g) { GameObject::moveTo(g); }
 

@@ -29,8 +29,8 @@ bool Robot::ejectBall(int idx)
     const double EJECTION_DISTANCE = 12.0; // inches behind the robot
     list<Ball *>::iterator it = balls.begin();
     advance(it, idx);
-    (*it)->x = x - EJECTION_DISTANCE*sin(heading);
-    (*it)->y = y - EJECTION_DISTANCE*cos(heading);
+    (*it)->setX(getX() - EJECTION_DISTANCE*sin(heading));
+    (*it)->setY(getY() - EJECTION_DISTANCE*cos(heading));
     balls.erase(it);
     return true;
   }
@@ -48,8 +48,8 @@ SensorWrapper &Robot::getViewableWrapper(GameObject **field, const int fieldLen)
     {
       double a1 = (PI*heading)/180 + (PI*_fov)/360;
       double a2 = (PI*heading)/180 - (PI*_fov)/360 - PI;
-      double dx = field[i]->x - x;
-      double dy = field[i]->y - y;
+      double dx = field[i]->getX() - getX();
+      double dy = field[i]->getY() - getY();
       if((dy*sin(a1) >= dx*cos(a1)) && (dy*sin(a2) >= dx*cos(a2))) // check if object is within fov
         visible[writeidx++] = field[i]->clone(); // add pointer to visible array
     }
@@ -69,8 +69,8 @@ SensorWrapper &Robot::getViewableWrapper(SensorWrapper &s)
     {
       double a1 = (PI*heading)/180 + (PI*_fov)/360;
       double a2 = (PI*heading)/180 - (PI*_fov)/360 - PI;
-      double dx = s[i]->x - x;
-      double dy = s[i]->y - y;
+      double dx = s[i]->getX() - getX();
+      double dy = s[i]->getY() - getY();
       if((dy*sin(a1) >= dx*cos(a1)) && (dy*sin(a2) >= dx*cos(a2))) // check if object is within fov
         visible.push(s[i]); // add pointer to visible array
     }

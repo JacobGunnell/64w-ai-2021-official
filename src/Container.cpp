@@ -1,6 +1,6 @@
 #include "Container.h"
 
-Container::Container(const Container &cpy) : GameObject(cpy.x, cpy.y)
+Container::Container(const Container &cpy) : GameObject(cpy.getX(), cpy.getY())
 {
   for(list<Ball *>::const_iterator it = cpy.balls.begin(); it != cpy.balls.end(); ++it)
     balls.push_back((*it)->clone());
@@ -18,8 +18,8 @@ bool Container::pushBall(Ball *b)
   if(balls.size() < _size && b != NULL)
   {
     balls.push_back(b);
-    b->x = x;
-    b->y = y;
+    b->setX(getX());
+    b->setY(getY());
     return true;
   }
   return false;

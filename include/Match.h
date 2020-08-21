@@ -17,11 +17,6 @@
 #include <chrono>
 using namespace std;
 
-//TODO: delete
-#include <unordered_map>
-#include <typeinfo>
-#include <typeindex>
-
 class Match
 {
 public:

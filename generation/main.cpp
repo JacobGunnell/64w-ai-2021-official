@@ -21,19 +21,30 @@ template<typename T> void shuffle(list<T> &);
 
 int main(int argc, char **argv)
 {
-  CLI::App app{"Generation, a program to breed a competent AI brain using an evolutional framework."};
+  CLI::App app{"64W-Generation, a program to breed a competent AI brain using an evolutional framework."};
   int POPULATION = 32, ELITE = 4, MUTATION_CHANCE = 20, GEN_MAX, RAND = 4;
   string OFPATH, IFPATH;
   bool SEXUAL = false;
   app.add_option("-p", POPULATION, "Initial Population", true)->check([](const string &str){ if(ceil(log2(stoi(str))) != floor(log2(stoi(str)))) return str + string(" is not a power of 2"); else return string(); });
   app.add_option("-e", ELITE, "Elite Population", true)->check([](const string &str){ if(ceil(log2(stoi(str))) != floor(log2(stoi(str)))) return str + string(" is not a power of 2"); else return string(); });
   app.add_option("-m", MUTATION_CHANCE, "Mutation Chance", true)->check(CLI::Range(0, 100));
-  app.add_option("-r", RAND, "Number of Random brains to generate each generation"); // TODO: check data
-  app.add_option("-g", GEN_MAX, "Number of Generations to run")->required();
+  app.add_option("-r", RAND, "Number of Random brains to generate each generation")->check(CLI::NonNegativeNumber);
+  app.add_option("-g", GEN_MAX, "Number of Generations to run")->required()->check(CLI::PositiveNumber);
   app.add_option("-o", OFPATH, "Directory to save to")->check(CLI::ExistingDirectory);
   app.add_option("-i", IFPATH, "Directory to read initial population from")->check(CLI::ExistingDirectory);
   app.add_flag("--sexual", SEXUAL, "Use sexual reproduction over asexual reproduction (not yet implemented)");
   CLI11_PARSE(app, argc, argv);
+  if(ELITE >= POPULATION)
+  {
+    throw(CLI::ValidationError("-e: elite must be less than total population (-p), preferably less than 15%"));
+    terminate();
+  }
+  if(RAND >= POPULATION - ELITE)
+  {
+    throw(CLI::ValidationError("-r: random brain count must be less than total population (-p) minus elite population (-e)"));
+    terminate();
+  }
+
   cout << "64W Generation v1.0" << endl
        << "Starting " << GEN_MAX << " generation run with initial population " << POPULATION;
   if(OFPATH.empty())
@@ -187,6 +198,7 @@ template<typename T> void shuffle(list<T> &lst) // shuffle contents of a list
 // TODO: add these source files to build targets
 #include "../src/Ball.cpp"
 #include "../src/Container.cpp"
+#include "../src/GameObject.cpp"
 #include "../src/Goal.cpp"
 #include "../src/Match.cpp"
 #include "../src/Move.cpp"

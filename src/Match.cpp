@@ -4,9 +4,7 @@ Match::Match(Brain *redBrain, Brain *blueBrain) : red(redBrain), blue(blueBrain)
 {
   wp = 0;
   lp = 0;
-  //cout << "generating field...";
   field = defaultField();
-  //cout << "done\n";
   generator = default_random_engine(std::chrono::system_clock::now().time_since_epoch().count());
 }
 
@@ -101,23 +99,13 @@ double Match::makemove(vector<Robot *> bots, Brain *brn, double timeRemaining)
     return 0;
 
   double umax = 0; int umaxidx = 0;
-  //cout << "makemove called\n";
-  //cout << "bots[0]: " << bots[0] << "  bots[1]: " << bots[1] << endl;
-  //cout << "contents of field (size " << field->size() << "): \n" << field->print() << endl;
-  //SensorWrapper s = bots[0]->getViewableWrapper(field);
-  ////cout << "got viewable wrapper\n";
-  ////cout << "contents of s: \n" << s.print() << endl;
   field->pov = field->findContained(bots[0]); // TODO: delete
   //SensorWrapper s = field /*bots[0]->getViewableWrapper(field) + bots[1]->getViewableWrapper(field)*/;
-  MoveContainer possibleMoves(*field, timeRemaining);
-  //cout << "created possiblemoves with contents:\n" << possibleMoves.print() << endl;
+  MoveContainer possibleMoves(*field, timeRemaining); // TODO: use viewable wrapper
   if(possibleMoves.empty())
     return 0;
 
-  arma::mat X = Move::toMatrix(possibleMoves, *field);
-  //cout << "created input matrix with contents:\n" << X << endl;
-  arma::mat U = brn->integrate(X);
-  //cout << "integration complete with results:\n" << U << endl;
+  arma::mat U = brn->integrate(Move::toMatrix(possibleMoves, *field));
   for(int m = 0; m < U.n_elem; m++)
   {
     if(U(m) >= umax)
@@ -126,32 +114,13 @@ double Match::makemove(vector<Robot *> bots, Brain *brn, double timeRemaining)
       umaxidx = m;
     }
   }
-  //cout << "highest value " << umax << " with index " << umaxidx+1 << "/" << U.n_elem << " " << possibleMoves.size() << endl;
 
   double estTime = possibleMoves[umaxidx]->getData(*field).t;
-  //cout << "got time estimate: " << estTime << endl;
   normal_distribution<double> dist(estTime, .01*estTime); // introduce noise with mean t and standard deviation proportional to t
   double actualTime = dist(generator);
-  //cout << "introduced noise: " << actualTime << endl;
   if(actualTime <= timeRemaining)
   {
-    unordered_map<type_index, string> map;
-    map[typeid(ZeroMove)] = "ZeroMove";
-    map[typeid(Claim)] = "Claim";
-    map[typeid(Cycle)] = "Cycle";
-    map[typeid(Intake)] = "Intake";
-    map[typeid(MoveSet)] = "MoveSet";
-    Move *m = possibleMoves[umaxidx];
-    //cout << "executing " << map[typeid(*m)] << "...";
-    if(possibleMoves[umaxidx]->vexecute(*field))
-    {
-      //cout << "successful\n\n\n";
-    }
-    else
-    {
-      //cout << "failed\n\n\n";
-    }
-    //cout << "new contents of field:\n" << field->print() << endl;
+    possibleMoves[umaxidx]->vexecute(*field);
     return actualTime < 0 ? 0 : actualTime; // on the off chance that the gaussian noise screws it up, don't let time be negative
   }
   else

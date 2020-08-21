@@ -39,7 +39,7 @@
 1590107546 source:c:\users\jacob\documents\prosprograms\64w-ai-rev0-2021\generation\src\mat.cpp
 	"mat.h"
 
-1597970318 source:c:\users\jacob\documents\prosprograms\64w-ai-rev0-2021\generation\main.cpp
+1598046061 source:c:\users\jacob\documents\prosprograms\64w-ai-rev0-2021\generation\main.cpp
 	<iostream>
 	<list>
 	<random>
@@ -52,6 +52,7 @@
 	"CLI11.hpp"
 	"../src/Ball.cpp"
 	"../src/Container.cpp"
+	"../src/GameObject.cpp"
 	"../src/Goal.cpp"
 	"../src/Match.cpp"
 	"../src/Move.cpp"
@@ -1866,7 +1867,7 @@
 	<typeinfo>
 	"armadillo"
 
-1597969098 c:\users\jacob\documents\prosprograms\64w-ai-rev0-2021\include\match.h
+1598046762 c:\users\jacob\documents\prosprograms\64w-ai-rev0-2021\include\match.h
 	"Brain.h"
 	"GameObject.h"
 	"Robot.h"
@@ -1877,16 +1878,13 @@
 	<random>
 	<ctime>
 	<chrono>
-	<unordered_map>
-	<typeinfo>
-	<typeindex>
 
 1597343256 c:\users\jacob\documents\prosprograms\64w-ai-rev0-2021\src\brain.cpp
 	"Brain.h"
 	"SMP.h"
 	"SP.h"
 
-1597971590 c:\users\jacob\documents\prosprograms\64w-ai-rev0-2021\src\match.cpp
+1598046770 c:\users\jacob\documents\prosprograms\64w-ai-rev0-2021\src\match.cpp
 	"Match.h"
 
 1597886461 c:\users\jacob\documents\prosprograms\64w-ai-rev0-2021\src\move.cpp
@@ -1915,7 +1913,7 @@
 	"SP.h"
 	"SMP.h"
 
-1597952106 c:\users\jacob\documents\prosprograms\64w-ai-rev0-2021\include\gameobject.h
+1598037409 c:\users\jacob\documents\prosprograms\64w-ai-rev0-2021\include\gameobject.h
 	<typeinfo>
 	<cmath>
 
@@ -1931,13 +1929,13 @@
 	"Ball.h"
 	"Robot.h"
 
-1590765569 c:\users\jacob\documents\prosprograms\64w-ai-rev0-2021\src\gameobject.cpp
+1598037562 c:\users\jacob\documents\prosprograms\64w-ai-rev0-2021\src\gameobject.cpp
 	"GameObject.h"
 
-1597971962 c:\users\jacob\documents\prosprograms\64w-ai-rev0-2021\src\sensorwrapper.cpp
+1598037986 c:\users\jacob\documents\prosprograms\64w-ai-rev0-2021\src\sensorwrapper.cpp
 	"SensorWrapper.h"
 
-1597954679 c:\users\jacob\documents\prosprograms\64w-ai-rev0-2021\include\robot.h
+1598037851 c:\users\jacob\documents\prosprograms\64w-ai-rev0-2021\include\robot.h
 	"Container.h"
 	"Ball.h"
 	<cmath>
@@ -1990,7 +1988,7 @@
 	"Robot.h"
 	"Move.h"
 
-1597953023 c:\users\jacob\documents\prosprograms\64w-ai-rev0-2021\src\container.cpp
+1598037919 c:\users\jacob\documents\prosprograms\64w-ai-rev0-2021\src\container.cpp
 	"Container.h"
 
 1597948765 c:\users\jacob\documents\prosprograms\64w-ai-rev0-2021\src\goal.cpp
@@ -2000,7 +1998,7 @@
 	"Hardware.h"
 	"MoveDerived.h"
 
-1597953023 c:\users\jacob\documents\prosprograms\64w-ai-rev0-2021\src\robot.cpp
+1598037765 c:\users\jacob\documents\prosprograms\64w-ai-rev0-2021\src\robot.cpp
 	"Robot.h"
 
 1596926576 c:\users\jacob\documents\prosprograms\64w-ai-rev0-2021\include\hardware.h

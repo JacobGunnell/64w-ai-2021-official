@@ -14,7 +14,15 @@ public:
   GameObject(double xCoord, double yCoord, double timeSinceLastSeen) : x(xCoord), y(yCoord), lastSeen(timeSinceLastSeen) {}
   virtual ~GameObject() {}
 
-  void moveTo(double x_, double y_) { x = x_; y = y_; }
+  static constexpr double X_MIN = -72;
+  static constexpr double X_MAX = 72;
+  void setX(double);
+  double getX() const { return x; }
+  static constexpr double Y_MIN = -72;
+  static constexpr double Y_MAX = 72;
+  void setY(double);
+  double getY() const { return y; }
+  void moveTo(double x_, double y_) { setX(x_); setY(y_); }
   void moveTo(GameObject &g) { moveTo(g.x, g.y); }
 
   virtual GameObject *clone() = 0;
@@ -25,6 +33,7 @@ public:
   virtual bool operator==(GameObject &rhs) { return (typeid(*this) == typeid(rhs)) && (distFrom(rhs) < obj_tolerance); } // TODO
   static constexpr double obj_tolerance = .5; // tolerance in inches for two GameObjects (seen in different snapshots) to be considered the same
 
+private:
   double x, y; // cartesian coords in inches, with (0,0) as the middle of the field
   double lastSeen;
 };

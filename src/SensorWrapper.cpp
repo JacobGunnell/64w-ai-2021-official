@@ -183,16 +183,16 @@ string SensorWrapper::print()
   {
     GameObject *g = operator[](i);
     if(g != NULL)
-      s += map[typeid(g)] + " at " + to_string(g->x) + ", " + to_string(g->y) + '\n';
+      s += map[typeid(g)] + " at " + to_string(g->getX()) + ", " + to_string(g->getY()) + '\n';
   }*/
   for(vector<Ball *>::iterator it = balls.begin(); it != balls.end(); ++it)
     if(*it != NULL)
-      s += string("Ball at ") + to_string((*it)->x) + ", " + to_string((*it)->y) + '\n';
+      s += string("Ball at ") + to_string((*it)->getX()) + ", " + to_string((*it)->getY()) + '\n';
   for(vector<Goal *>::iterator it = goals.begin(); it != goals.end(); ++it)
   {
     if(*it != NULL)
     {
-      s += string("Goal at ") + to_string((*it)->x) + ", " + to_string((*it)->y) + '\n';
+      s += string("Goal at ") + to_string((*it)->getX()) + ", " + to_string((*it)->getY()) + '\n';
       list<Ball *> gb = (*it)->getBalls();
       for(list<Ball *>::reverse_iterator bit = gb.rbegin(); bit != gb.rend(); ++bit)
         if(*bit != NULL)
@@ -201,7 +201,7 @@ string SensorWrapper::print()
   }
   for(vector<Robot *>::iterator it = robots.begin(); it != robots.end(); ++it)
     if(*it != NULL)
-      s += string("Robot at ") + to_string((*it)->x) + ", " + to_string((*it)->y) + '\n';
+      s += string("Robot at ") + to_string((*it)->getX()) + ", " + to_string((*it)->getY()) + '\n';
   if(s.empty())
     s = "[empty]";
   return s;
