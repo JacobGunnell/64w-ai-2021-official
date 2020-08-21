@@ -9,12 +9,18 @@
 #include "Ball.h"
 #include "Goal.h"
 
+#include "SensorWrapper.h"
 #include "MoveContainer.h"
 
 #include <random>
 #include <ctime>
 #include <chrono>
 using namespace std;
+
+//TODO: delete
+#include <unordered_map>
+#include <typeinfo>
+#include <typeindex>
 
 class Match
 {
@@ -30,32 +36,22 @@ public:
   void setContestants(Brain *r, Brain *b) { setRed(r); setBlue(b); }
 
   Alliance run();
-  int score(Alliance);
+  int score(Alliance a) { if(field != NULL) return score(*field, a); else return -1; }
   void reset();
+
+  static int score(const SensorWrapper &, Alliance);
 
   int wp, lp;
 
 private:
   Brain *red;
   Brain *blue;
-  GameObject **field; // TODO: replace field with a SensorWrapper?
-  int fieldSize;
+  SensorWrapper *field;
   default_random_engine generator;
 
-  double makemove(Robot **, Brain *, double);
+  double makemove(vector<Robot *>, Brain *, double);
 
-  static GameObject **defaultField();
-  static const int defaultFieldSize;
-  static Goal **getGoals(GameObject **f) { return reinterpret_cast<Goal **>(f); }
-  static const int numGoals;
-  static Robot **getRobots(GameObject **f) { return reinterpret_cast<Robot **>(f + numGoals); }
-  static const int numRobots;
-  static Robot **getRedRobots(GameObject **f) { return reinterpret_cast<Robot **>(f + numGoals); }
-  static const int numRedRobots;
-  static Robot **getBlueRobots(GameObject **f) { return reinterpret_cast<Robot **>(f + numGoals + numRedRobots); }
-  static const int numBlueRobots;
-  static Ball **getBalls(GameObject **f) { return reinterpret_cast<Ball **>(f + numGoals + numRobots); }
-  static const int numBalls;
+  static SensorWrapper *defaultField();
 };
 
 #endif // MATCH_H

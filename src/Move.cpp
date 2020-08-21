@@ -1,14 +1,22 @@
 #include "Move.h"
 
-arma::mat Move::toMatrix(Move **m, const int len, Robot *robot)
+double Move::getPoints(SensorWrapper &sensorwrapper, Alliance a)
+{
+  SensorWrapper temp(sensorwrapper);
+  double initialScore = Match::score(temp, a) - Match::score(temp, !a);
+  vexecute(temp);
+  return (Match::score(temp, a) - Match::score(temp, !a)) - initialScore;
+}
+
+arma::mat Move::toMatrix(Move **m, const int len, SensorWrapper &sensorwrapper)
 {
   arma::mat matrix;
-  if(m != NULL && robot != NULL)
+  if(m != NULL)
   {
     for(int i = 0; i < len; i++)
     {
       if(m[i] != NULL)
-        matrix.insert_rows(i, m[i]->getData(robot).vectorize());
+        matrix.insert_rows(i, m[i]->getData(sensorwrapper).vectorize());
       else
         matrix.insert_rows(i, MoveData().vectorize());
     }
@@ -17,7 +25,7 @@ arma::mat Move::toMatrix(Move **m, const int len, Robot *robot)
   return MoveData().vectorize();
 }
 
-arma::mat Move::toMatrix(MoveContainer m, Robot *robot)
+arma::mat Move::toMatrix(MoveContainer m, SensorWrapper &sensorwrapper)
 {
-  return toMatrix(m.moves.data(), m.moves.size(), robot);
+  return toMatrix(m.moves.data(), m.moves.size(), sensorwrapper);
 }

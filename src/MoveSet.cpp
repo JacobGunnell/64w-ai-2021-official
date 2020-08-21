@@ -22,14 +22,17 @@ MoveSet::MoveSet(Move **moves_, int len_) : Move()
 MoveSet::~MoveSet()
 {
   for(vector<Move *>::iterator it = moves.begin(); it != moves.end(); ++it)
+  {
     delete *it;
+    *it = NULL;
+  }
 }
 
-MoveData MoveSet::getData(Robot *robot)
+MoveData MoveSet::getData(SensorWrapper &sensorwrapper)
 {
   MoveData m;
   for(vector<Move *>::iterator it = moves.begin(); it != moves.end(); ++it)
-    m += (*it)->getData(robot);
+    m += (*it)->getData(sensorwrapper);
   return m;
 }
 
@@ -41,18 +44,18 @@ bool MoveSet::execute()
   return true;
 }
 
-bool MoveSet::vexecute(Robot *robot)
+bool MoveSet::vexecute(SensorWrapper &sensorwrapper)
 {
   for(vector<Move *>::iterator it = moves.begin(); it != moves.end(); ++it)
-    if(!(*it)->vexecute(robot))
+    if(!(*it)->vexecute(sensorwrapper))
       return false;
   return true;
 }
 
-bool MoveSet::viable(Robot *robot)
+bool MoveSet::viable(SensorWrapper &sensorwrapper)
 {
   for(vector<Move *>::iterator it = moves.begin(); it != moves.end(); ++it)
-    if(!(*it)->viable(robot))
+    if(!(*it)->viable(sensorwrapper))
       return false;
   return true;
 }

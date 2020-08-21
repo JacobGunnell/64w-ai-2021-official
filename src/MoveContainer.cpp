@@ -19,10 +19,27 @@ MoveContainer::MoveContainer(Move **moves_, int len_)
     moves.push_back(new ZeroMove);
 }
 
-MoveContainer::MoveContainer(SensorWrapper s, Robot *r, double time) // TODO: check to make sure move is viable (for instance, if row is already connected, omit that move)
+MoveContainer::MoveContainer(SensorWrapper &s, double time)
 {
   moves.push_back(new ZeroMove);
 
+  //cout << "movecontainer ctor" << endl;
+  vector<Goal *> g = s.getGoals();
+  //cout << "goals: " << g.size() << endl;
+  Move *m;
+  for(vector<Goal *>::iterator it = g.begin(); it != g.end(); ++it)
+  {
+    m = new Claim(*it);
+    if(m->viable(s))
+    {
+      //cout << "viable" << endl;
+      moves.push_back(m);
+    }
+    else
+      delete m;
+  }
+
+  /*
   // TODO: is there a better way to do this?
   // Iterate through all permutations of goals viable for scoring, including sets of 1, 2, and 3 goals (i'm very sorry.)
   vector<Goal *> g = s.getGoals();
@@ -31,7 +48,7 @@ MoveContainer::MoveContainer(SensorWrapper s, Robot *r, double time) // TODO: ch
     MoveSet *mset1 = new MoveSet; // cycle 1 goal
     MoveSet *mset2 = new MoveSet; // cycle 2 goals
     MoveSet *mset3 = new MoveSet; // cycle 3 goals
-    
+
     Move *m0 = new Cycle(*it0);
     if(m0->viable(r))
     {
@@ -79,19 +96,50 @@ MoveContainer::MoveContainer(SensorWrapper s, Robot *r, double time) // TODO: ch
         }
       }
     }
-
   }
-
-  /*Goal **g = s.getGoals().data();
-  const int NUM_CONNECTABLE_ROWS = 8;
-  for(int i = 0; i < NUM_CONNECTABLE_ROWS; i++)
-    moves.push_back(new ConnectRow(i, g));*/
+  */
 }
 
 MoveContainer::~MoveContainer()
 {
   for(vector<Move *>::iterator it = moves.begin(); it != moves.end(); ++it)
+  {
     delete *it;
+    *it = NULL;
+  }
+}
+
+void push(Move *m)
+{
+  // TODO: check for duplicates
+}
+
+void append(vector<Move *> m)
+{
+  // TODO
+}
+
+void append(Move **m, int len)
+{
+  // TODO
+}
+
+string MoveContainer::print()
+{
+  string s;
+  unordered_map<type_index, string> map;
+  map[typeid(ZeroMove)] = "ZeroMove";
+  map[typeid(Claim)] = "Claim";
+  map[typeid(Cycle)] = "Cycle";
+  map[typeid(Intake)] = "Intake";
+  map[typeid(MoveSet)] = "MoveSet";
+  for(vector<Move *>::iterator it = moves.begin(); it != moves.end(); ++it)
+  {
+    Move *m = *it;
+    if(m != NULL)
+      s += map[typeid(*m)] + '\n';
+  }
+  return s;
 }
 
 Move *MoveContainer::operator[](int idx)

@@ -13,10 +13,10 @@
 				<Option compiler="gnu_gcc_compiler_x64_with_gcc_101" />
 				<Option parameters="-g 20 -p 64 -i initial -o elite" />
 				<Compiler>
-					<Add option="-march=corei7-avx" />
 					<Add option="-std=c++1z" />
 					<Add option="-m64" />
 					<Add option="-g" />
+					<Add option="-DGENERATION_NO_ROBOT" />
 					<Add directory="include" />
 					<Add directory="C:/Users/jacob/Documents/ProsPrograms/64W-AI-REV0-2021/include" />
 					<Add directory="C:/Users/jacob/Documents/ProsPrograms/64W-AI-REV0-2021/src" />
@@ -33,13 +33,19 @@
 				</Linker>
 			</Target>
 			<Target title="Release">
-				<Option output="bin/Release/64W_Generation_1" prefix_auto="1" extension_auto="1" />
+				<Option output="bin/Release/generation" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Release/" />
 				<Option type="1" />
-				<Option compiler="gnu_gcc_compiler_x64" />
+				<Option compiler="gnu_gcc_compiler_x64_with_gcc_101" />
+				<Option parameters="-g 20 -p 64 -i initial -o elite" />
 				<Compiler>
+					<Add option="-march=corei7-avx" />
+					<Add option="-std=c++1z" />
 					<Add option="-m64" />
+					<Add option="-DGENERATION_NO_ROBOT" />
 					<Add directory="include" />
+					<Add directory="C:/Users/jacob/Documents/ProsPrograms/64W-AI-REV0-2021/include" />
+					<Add directory="C:/Users/jacob/Documents/ProsPrograms/64W-AI-REV0-2021/src" />
 				</Compiler>
 				<Linker>
 					<Add option="-O3" />
@@ -48,6 +54,7 @@
 					<Add option="-static-libgcc" />
 					<Add option="-static" />
 					<Add option="-m64" />
+					<Add option="-lstdc++fs" />
 				</Linker>
 			</Target>
 		</Build>
@@ -64,6 +71,93 @@
 			<Add option="-static" />
 			<Add option="-m64" />
 		</Linker>
+		<Unit filename="../include/AI.h">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
+		<Unit filename="../include/Ball.h">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
+		<Unit filename="../include/Brain.h">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
+		<Unit filename="../include/Container.h">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
+		<Unit filename="../include/GameObject.h">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
+		<Unit filename="../include/Goal.h">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
+		<Unit filename="../include/Match.h">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
+		<Unit filename="../include/Move.h">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
+		<Unit filename="../include/MoveContainer.h">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
+		<Unit filename="../include/MoveDerived.h">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
+		<Unit filename="../include/MoveSet.h">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
+		<Unit filename="../include/Robot.h">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
+		<Unit filename="../include/SMP.h">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
+		<Unit filename="../include/SP.h">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
+		<Unit filename="../include/SensorWrapper.h">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
+		<Unit filename="../src/Ball.cpp">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
+		<Unit filename="../src/Brain.cpp">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
+		<Unit filename="../src/Container.cpp">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
+		<Unit filename="../src/Goal.cpp">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
+		<Unit filename="../src/Match.cpp">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
+		<Unit filename="../src/Move.cpp">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
+		<Unit filename="../src/MoveContainer.cpp">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
+		<Unit filename="../src/MoveSet.cpp">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
+		<Unit filename="../src/Robot.cpp">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
+		<Unit filename="../src/SMP.cpp">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
+		<Unit filename="../src/SP.cpp">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
+		<Unit filename="../src/main.cpp">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
+		<Unit filename="../src/movederived.cpp">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
+		<Unit filename="../src/sensorwrapper.cpp">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
 		<Unit filename="main.cpp" />
 		<Extensions>
 			<code_completion />

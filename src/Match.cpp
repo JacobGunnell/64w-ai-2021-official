@@ -1,48 +1,38 @@
 #include "Match.h"
 
-const int Match::numGoals = 9;
-const int Match::numRedRobots = 2; // TODO: implement 2 on 2
-const int Match::numBlueRobots = 2;
-const int Match::numRobots = Match::numRedRobots + Match::numBlueRobots;
-const int Match::numBalls = 32;
-const int Match::defaultFieldSize = numGoals + numRobots + numBalls;
-
-Match::Match(Brain *redBrain, Brain *blueBrain)
+Match::Match(Brain *redBrain, Brain *blueBrain) : red(redBrain), blue(blueBrain)
 {
-  red = redBrain->clone();
-  blue = blueBrain->clone();
   wp = 0;
   lp = 0;
+  //cout << "generating field...";
   field = defaultField();
-  fieldSize = defaultFieldSize;
+  //cout << "done\n";
   generator = default_random_engine(std::chrono::system_clock::now().time_since_epoch().count());
 }
 
 Match::Match(const Match &cpy)
 {
-  red = cpy.red->clone();
-  blue = cpy.blue->clone();
+  red = cpy.red;
+  blue = cpy.blue;
   wp = cpy.wp;
   lp = cpy.lp;
-  field = new GameObject*[cpy.fieldSize];
-  for(int i = 0; i < cpy.fieldSize; i++)
-    field[i] = cpy.field[i]->clone();
+  if(cpy.field != NULL)
+    field = new SensorWrapper(*cpy.field);
+  else
+    field = defaultField();
   generator = default_random_engine(std::chrono::system_clock::now().time_since_epoch().count());
 }
 
 Match::~Match()
 {
-  delete red;
-  delete blue;
-  for(int i = 0; i < fieldSize; i++)
-    delete field[i];
-  delete [] field;
+  field->clear();
+  delete field;
 }
 
 Alliance Match::run()
 {
-  Robot **redrobots = getRedRobots(field);
-  Robot **bluerobots = getBlueRobots(field);
+  vector<Robot *> redrobots = field->getRobots(RED_ALLIANCE);
+  vector<Robot *> bluerobots = field->getRobots(BLUE_ALLIANCE);
   double redtime = 120.0;
   double bluetime = 120.0;
   while(redtime > 0 && bluetime > 0)
@@ -74,13 +64,13 @@ Alliance Match::run()
   }
 }
 
-int Match::score(Alliance a)
+int Match::score(const SensorWrapper &f, Alliance a)
 {
   Color c = static_cast<Color>(a);
   int score = 0;
 
-  Goal **goals = getGoals(field);
-  for(int i = 0; i < numGoals; i++)
+  vector<Goal *> goals = f.getGoals();
+  for(int i = 0; i < goals.size(); i++)
     score += goals[i]->numBalls(c); // each scored Ball of your alliance color is worth 1 point
 
   for(int i = 0; i < 8; i++)
@@ -96,20 +86,13 @@ void Match::reset()
 {
   wp = 0;
   lp = 0;
-  delete red;
-  red = NULL;
-  delete blue;
-  blue = NULL;
-  for(int i = 0; i < defaultFieldSize; i++)
-    delete field[i];
-  delete [] field;
+  field->clear();
+  delete field;
   field = defaultField();
 }
 
-double Match::makemove(Robot **bots, Brain *brn, double timeRemaining)
+double Match::makemove(vector<Robot *> bots, Brain *brn, double timeRemaining)
 {
-  if(bots == NULL)
-    return 0;
   if(bots[0] == NULL || bots[1] == NULL)
     return 0;
   if(brn == NULL)
@@ -117,95 +100,133 @@ double Match::makemove(Robot **bots, Brain *brn, double timeRemaining)
   if(timeRemaining <= 0)
     return 0;
 
-  double umax = 0; int umaxidx;
-  MoveContainer possibleMoves(bots[0]->getViewableWrapper(field, fieldSize), bots[0], timeRemaining);
-
-  arma::mat U = brn->integrate(Move::toMatrix(possibleMoves, bots[0]));
-  if(U.n_elem != possibleMoves.size())
+  double umax = 0; int umaxidx = 0;
+  //cout << "makemove called\n";
+  //cout << "bots[0]: " << bots[0] << "  bots[1]: " << bots[1] << endl;
+  //cout << "contents of field (size " << field->size() << "): \n" << field->print() << endl;
+  //SensorWrapper s = bots[0]->getViewableWrapper(field);
+  ////cout << "got viewable wrapper\n";
+  ////cout << "contents of s: \n" << s.print() << endl;
+  field->pov = field->findContained(bots[0]); // TODO: delete
+  //SensorWrapper s = field /*bots[0]->getViewableWrapper(field) + bots[1]->getViewableWrapper(field)*/;
+  MoveContainer possibleMoves(*field, timeRemaining);
+  //cout << "created possiblemoves with contents:\n" << possibleMoves.print() << endl;
+  if(possibleMoves.empty())
     return 0;
+
+  arma::mat X = Move::toMatrix(possibleMoves, *field);
+  //cout << "created input matrix with contents:\n" << X << endl;
+  arma::mat U = brn->integrate(X);
+  //cout << "integration complete with results:\n" << U << endl;
   for(int m = 0; m < U.n_elem; m++)
   {
-    if(U(m) > umax)
+    if(U(m) >= umax)
     {
       umax = U(m);
       umaxidx = m;
     }
   }
+  //cout << "highest value " << umax << " with index " << umaxidx+1 << "/" << U.n_elem << " " << possibleMoves.size() << endl;
 
-  double estTime;
-  if(possibleMoves[umaxidx] != NULL)
-    estTime = possibleMoves[umaxidx]->getData(bots[0]).t;
-  else
-    return 0;
+  double estTime = possibleMoves[umaxidx]->getData(*field).t;
+  //cout << "got time estimate: " << estTime << endl;
   normal_distribution<double> dist(estTime, .01*estTime); // introduce noise with mean t and standard deviation proportional to t
-  double actualTime = estTime + dist(generator);
+  double actualTime = dist(generator);
+  //cout << "introduced noise: " << actualTime << endl;
   if(actualTime <= timeRemaining)
   {
-    possibleMoves[umaxidx]->vexecute(bots[0]);
-    return actualTime < 0 ? actualTime : 0; // on the off chance that the gaussian noise screws it up, don't let time be negative
+    unordered_map<type_index, string> map;
+    map[typeid(ZeroMove)] = "ZeroMove";
+    map[typeid(Claim)] = "Claim";
+    map[typeid(Cycle)] = "Cycle";
+    map[typeid(Intake)] = "Intake";
+    map[typeid(MoveSet)] = "MoveSet";
+    Move *m = possibleMoves[umaxidx];
+    //cout << "executing " << map[typeid(*m)] << "...";
+    if(possibleMoves[umaxidx]->vexecute(*field))
+    {
+      //cout << "successful\n\n\n";
+    }
+    else
+    {
+      //cout << "failed\n\n\n";
+    }
+    //cout << "new contents of field:\n" << field->print() << endl;
+    return actualTime < 0 ? 0 : actualTime; // on the off chance that the gaussian noise screws it up, don't let time be negative
   }
   else
     return timeRemaining;
 }
 
-GameObject **Match::defaultField()
+SensorWrapper *Match::defaultField()
 {
-  GameObject **field = new GameObject*[defaultFieldSize]; // 32 balls, 9 goals, 4 robots
-  Goal **goals = getGoals(field);
-  Robot **robots = getRobots(field);
-  Ball **balls = getBalls(field);
-  int gidx = 0, ridx = 0, bidx = 0;
+  SensorWrapper *f = new SensorWrapper;
+  f->balls.reserve(32);
+  f->goals.reserve(9);
+  f->robots.reserve(4);
+  Ball *t1, *t2, *t3; // temporaries for upto 3 balls in goal
 
   // Goals / balls in goals
-  goals[gidx++] = new Goal{-66.351, 66.351,
-    static_cast<Ball *>(balls[bidx++] = new Ball{RED}),
-    static_cast<Ball *>(balls[bidx++] = new Ball{BLUE})};
-  goals[gidx++] = new Goal{0, 66.351,
-    static_cast<Ball *>(balls[bidx++] = new Ball{RED}),
-    static_cast<Ball *>(balls[bidx++] = new Ball{BLUE}),
-    static_cast<Ball *>(balls[bidx++] = new Ball{RED})};
-  goals[gidx++] = new Goal{66.351, 66.351,
-    static_cast<Ball *>(balls[bidx++] = new Ball{BLUE}),
-    static_cast<Ball *>(balls[bidx++] = new Ball{RED})};
-  goals[gidx++] = new Goal{-66.351, 0,
-    static_cast<Ball *>(balls[bidx++] = new Ball{RED}),
-    static_cast<Ball *>(balls[bidx++] = new Ball{BLUE})};
-  goals[gidx++] = new Goal{0, 0};
-  goals[gidx++] = new Goal{66.351, 0,
-    static_cast<Ball *>(balls[bidx++] = new Ball{BLUE}),
-    static_cast<Ball *>(balls[bidx++] = new Ball{RED})};
-  goals[gidx++] = new Goal{-66.351, -66.351,
-    static_cast<Ball *>(balls[bidx++] = new Ball{RED}),
-    static_cast<Ball *>(balls[bidx++] = new Ball{BLUE})};
-  goals[gidx++] = new Goal{0, -66.351,
-    static_cast<Ball *>(balls[bidx++] = new Ball{BLUE}),
-    static_cast<Ball *>(balls[bidx++] = new Ball{RED}),
-    static_cast<Ball *>(balls[bidx++] = new Ball{BLUE})};
-  goals[gidx++] = new Goal{66.351, -66.351,
-    static_cast<Ball *>(balls[bidx++] = new Ball{BLUE}),
-    static_cast<Ball *>(balls[bidx++] = new Ball{RED})};
+  f->balls.push_back(t1 = new Ball{RED});
+  f->balls.push_back(t2 = new Ball{BLUE});
+  f->goals.push_back(new Goal{-66.351, 66.351, t1, t2});
+
+  f->balls.push_back(t1 = new Ball{RED});
+  f->balls.push_back(t2 = new Ball{BLUE});
+  f->balls.push_back(t3 = new Ball{RED});
+  f->goals.push_back(new Goal{0, 66.351, t1, t2, t3});
+
+  f->balls.push_back(t1 = new Ball{BLUE});
+  f->balls.push_back(t2 = new Ball{RED});
+  f->goals.push_back(new Goal{66.351, 66.351, t1, t2});
+
+  f->balls.push_back(t1 = new Ball{RED});
+  f->balls.push_back(t2 = new Ball{BLUE});
+  f->goals.push_back(new Goal{-66.351, 0, t1, t2});
+
+  f->goals.push_back(new Goal{0, 0});
+
+  f->balls.push_back(t1 = new Ball{BLUE});
+  f->balls.push_back(t2 = new Ball{RED});
+  f->goals.push_back(new Goal{66.351, 0, t1, t2});
+
+  f->balls.push_back(t1 = new Ball{RED});
+  f->balls.push_back(t2 = new Ball{BLUE});
+  f->goals.push_back(new Goal{-66.351, -66.351, t1, t2});
+
+  f->balls.push_back(t1 = new Ball{BLUE});
+  f->balls.push_back(t2 = new Ball{RED});
+  f->balls.push_back(t3 = new Ball{BLUE});
+  f->goals.push_back(new Goal{0, -66.351, t1, t2, t3});
+
+  f->balls.push_back(t1 = new Ball{BLUE});
+  f->balls.push_back(t2 = new Ball{RED});
+  f->goals.push_back(new Goal{66.351, -66.351, t1, t2});
 
   // Robots / Preloads
-  robots[ridx++] = new Robot{T_MASTER, RED_ALLIANCE, -60, 36, 90, 4, 50,
-    static_cast<Ball *>(balls[bidx++] = new Ball{RED})};
-  robots[ridx++] = new Robot{T_SLAVE, RED_ALLIANCE, -60, -36, 90, 3, 50,
-    static_cast<Ball *>(balls[bidx++] = new Ball{RED})};
-  robots[ridx++] = new Robot{T_MASTER, BLUE_ALLIANCE, 60, 36, -90, 4, 50,
-    static_cast<Ball *>(balls[bidx++] = new Ball{BLUE})};
-  robots[ridx++] = new Robot{T_SLAVE, BLUE_ALLIANCE, 60, -36, -90, 3, 50,
-    static_cast<Ball *>(balls[bidx++] = new Ball{BLUE})};
+  f->balls.push_back(t1 = new Ball{RED});
+  f->robots.push_back(new Robot{T_MASTER, RED_ALLIANCE, -60.0, 36.0, 90, 4, 50, t1});
+
+  f->balls.push_back(t1 = new Ball{RED});
+  f->robots.push_back(new Robot{T_SLAVE, RED_ALLIANCE, -60.0, -36.0, 90, 3, 50, t1});
+
+  f->balls.push_back(t1 = new Ball{BLUE});
+  f->robots.push_back(new Robot{T_MASTER, BLUE_ALLIANCE, 60.0, 36.0, -90, 4, 50, t1});
+
+  f->balls.push_back(t1 = new Ball{BLUE});
+  f->robots.push_back(new Robot{T_SLAVE, BLUE_ALLIANCE, 60.0, -36.0, -90, 3, 50, t1});
 
   // Balls on field
-  balls[bidx++] = new Ball{0, 8.799, RED};
-  balls[bidx++] = new Ball{0, -8.799, BLUE};
-  balls[bidx++] = new Ball{8.799, 0, RED};
-  balls[bidx++] = new Ball{-8.799, 0, BLUE};
-  balls[bidx++] = new Ball{0, 36, RED};
-  balls[bidx++] = new Ball{0, -36, BLUE};
-  balls[bidx++] = new Ball{60, 60, BLUE};
-  balls[bidx++] = new Ball{60, -60, BLUE};
-  balls[bidx++] = new Ball{-60, 60, RED};
-  balls[bidx++] = new Ball{-60, -60, RED};
+  f->balls.push_back(new Ball{0.0, 8.799, RED});
+  f->balls.push_back(new Ball{0.0, -8.799, BLUE});
+  f->balls.push_back(new Ball{8.799, 0.0, RED});
+  f->balls.push_back(new Ball{-8.799, 0.0, BLUE});
+  f->balls.push_back(new Ball{0.0, 36.0, RED});
+  f->balls.push_back(new Ball{0.0, -36.0, BLUE});
+  f->balls.push_back(new Ball{60.0, 60.0, BLUE});
+  f->balls.push_back(new Ball{60.0, -60.0, BLUE});
+  f->balls.push_back(new Ball{-60.0, 60.0, RED});
+  f->balls.push_back(new Ball{-60.0, -60.0, RED});
 
-  return field;
+  return f;
 }

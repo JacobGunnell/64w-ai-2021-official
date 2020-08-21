@@ -7,7 +7,7 @@
 #include "Robot.h"
 #include <cmath>
 
-
+class Match;
 class MoveContainer;
 
 struct MoveData
@@ -27,17 +27,20 @@ public:
   Move() {}
   virtual ~Move() {}
 
-  virtual MoveData getData(Robot *) = 0; // instructions to convert to vector form for AI consideration (TODO: expand vectors)
+  virtual MoveData getData(SensorWrapper &) = 0; // instructions to convert to vector form for AI consideration (TODO: expand vectors)
   virtual bool execute() = 0; // instructions to execute with a real robot
-  virtual bool vexecute(Robot *) = 0; // instructions to execute on a virtual Robot
-  virtual bool viable(Robot *) = 0;
+  virtual bool vexecute(SensorWrapper &) = 0; // instructions to execute on a virtual Robot
+  virtual bool viable(SensorWrapper &) = 0;
 
   virtual Move *clone() = 0;
 
-  static arma::mat toMatrix(Move **, const int, Robot *);
-  static arma::mat toMatrix(MoveContainer, Robot *);
+  double getPoints(SensorWrapper &, Alliance); // use this function only if points cannot be calculated more efficiently
+
+  static arma::mat toMatrix(Move **, const int, SensorWrapper &);
+  static arma::mat toMatrix(MoveContainer, SensorWrapper &);
 };
 
+#include "Match.h"
 #include "MoveContainer.h"
 
 #endif // MOVE_H

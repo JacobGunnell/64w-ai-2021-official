@@ -1,19 +1,79 @@
 #include "Robot.h"
 
-SensorWrapper Robot::getViewableWrapper(GameObject **field, const int fieldLen)
+Alliance operator!(const Alliance &a)
+{
+  if(a == RED_ALLIANCE)
+    return BLUE_ALLIANCE;
+  else if(a == BLUE_ALLIANCE)
+    return RED_ALLIANCE;
+  else
+    return NEITHER_ALLIANCE;
+}
+
+bool Robot::pushBall(Ball *b)
+{
+  if(Container::pushBall(b))
+  {
+    if(b->getColor() != static_cast<Color>(_alliance))
+      ejectBall(0);
+    return true;
+  }
+  else
+    return false;
+}
+
+bool Robot::ejectBall(int idx)
+{
+  if(idx >= 0 && idx < balls.size())
+  {
+    const double EJECTION_DISTANCE = 12.0; // inches behind the robot
+    list<Ball *>::iterator it = balls.begin();
+    advance(it, idx);
+    (*it)->x = x - EJECTION_DISTANCE*sin(heading);
+    (*it)->y = y - EJECTION_DISTANCE*cos(heading);
+    balls.erase(it);
+    return true;
+  }
+  else
+    return false;
+}
+
+SensorWrapper &Robot::getViewableWrapper(GameObject **field, const int fieldLen)
 {
   GameObject **visible = new GameObject *[fieldLen]; // allocate maximum possible memory requirement
   int writeidx = 0;
   for(int i = 0; i < fieldLen; i++)
   {
-    double a1 = (PI*heading)/180 + (PI*_fov)/360;
-    double a2 = (PI*heading)/180 - (PI*_fov)/360 - PI;
-    double dx = field[i]->x - x;
-    double dy = field[i]->y - y;
-    if((dy*sin(a1) >= dx*cos(a1)) && (dy*sin(a2) >= dx*cos(a2))) // check if object is within fov
-      visible[writeidx++] = field[i]; // add pointer to visible array
+    if(field[i] != NULL)
+    {
+      double a1 = (PI*heading)/180 + (PI*_fov)/360;
+      double a2 = (PI*heading)/180 - (PI*_fov)/360 - PI;
+      double dx = field[i]->x - x;
+      double dy = field[i]->y - y;
+      if((dy*sin(a1) >= dx*cos(a1)) && (dy*sin(a2) >= dx*cos(a2))) // check if object is within fov
+        visible[writeidx++] = field[i]->clone(); // add pointer to visible array
+    }
   }
-  SensorWrapper s(visible, writeidx);
+  static SensorWrapper s(visible, writeidx);
+  s.pov = s.findContained(this);
   delete [] visible;
   return s;
+}
+
+SensorWrapper &Robot::getViewableWrapper(SensorWrapper &s)
+{
+  static SensorWrapper visible;
+  for(int i = 0; i < s.size(); i++)
+  {
+    if(s[i] != NULL)
+    {
+      double a1 = (PI*heading)/180 + (PI*_fov)/360;
+      double a2 = (PI*heading)/180 - (PI*_fov)/360 - PI;
+      double dx = s[i]->x - x;
+      double dy = s[i]->y - y;
+      if((dy*sin(a1) >= dx*cos(a1)) && (dy*sin(a2) >= dx*cos(a2))) // check if object is within fov
+        visible.push(s[i]); // add pointer to visible array
+    }
+  }
+  return visible;
 }

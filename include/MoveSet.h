@@ -15,14 +15,14 @@ public:
   MoveSet(Move **, int);
   ~MoveSet();
 
-  vector<Move *> getMoves() const { return moves; }
+  vector<Move *> &getMoves() { return moves; }
   int size() const { return moves.size(); }
   void push(Move *m) { if(m != NULL) moves.push_back(m->clone()); }
 
-  MoveData getData(Robot *) override;
+  MoveData getData(SensorWrapper &) override;
   bool execute() override;
-  bool vexecute(Robot *) override;
-  bool viable(Robot *) override;
+  bool vexecute(SensorWrapper &) override;
+  bool viable(SensorWrapper &) override;
 
   Move *clone() override { return new MoveSet(moves); }
 

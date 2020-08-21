@@ -16,7 +16,4 @@ temp.errors
 .d/
 
 # CodeBlocks
-*.cbp
-*.depend
-*.layout
 CppCheckResults.xml

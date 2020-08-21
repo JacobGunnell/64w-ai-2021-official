@@ -2,20 +2,20 @@
 
 Container::Container(const Container &cpy) : GameObject(cpy.x, cpy.y)
 {
-  for(deque<Ball *>::const_iterator it = cpy.balls.begin(); it != cpy.balls.end(); ++it)
+  for(list<Ball *>::const_iterator it = cpy.balls.begin(); it != cpy.balls.end(); ++it)
     balls.push_back((*it)->clone());
 }
 
-deque<Ball *> Container::dump()
+list<Ball *> &Container::dump()
 {
-  deque<Ball *> temp = balls;
+  static list<Ball *> temp = balls;
   balls.clear();
   return temp;
 }
 
 bool Container::pushBall(Ball *b)
 {
-  if(balls.size() < _size)
+  if(balls.size() < _size && b != NULL)
   {
     balls.push_back(b);
     b->x = x;
@@ -37,7 +37,8 @@ Ball *Container::popBall()
 int Container::numBalls(Color c)
 {
   int n = 0;
-  for(deque<Ball *>::iterator it = balls.begin(); it != balls.end(); ++it)
-    n += ((*it)->getColor() == c);
+  for(list<Ball *>::iterator it = balls.begin(); it != balls.end(); ++it)
+    if(*it != NULL && (*it)->getColor() == c)
+      n++;
   return n;
 }

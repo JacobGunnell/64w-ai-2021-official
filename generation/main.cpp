@@ -77,13 +77,13 @@ int main(int argc, char **argv)
     cout << "loaded " << numBrains << " brains" << endl;
   }
   cout << "Randomly generating " << POPULATION - numBrains << " brains to fill array... ";
-  for(int i = numBrains; i < POPULATION; i++)
+  while(numBrains++ < POPULATION)
     cGen.push_front(Brain::random(N_INPUTS));
   cout << "done" << endl;
 
   for(int gen = 0; gen < GEN_MAX; gen++)
   {
-    cout << "Gen " << gen << " in progress...";
+    cout << "Gen " << gen + 1 << " in progress...";
     high_resolution_clock::time_point start = high_resolution_clock::now();
     int totalPoints = 0, numPlays = 0;
 
@@ -184,6 +184,7 @@ template<typename T> void shuffle(list<T> &lst) // shuffle contents of a list
 }
 
 // tell the linker to link the implementation files without creating a library; probably will create one in the future and make it a PROS library template
+// TODO: add these source files to build targets
 #include "../src/Ball.cpp"
 #include "../src/Container.cpp"
 #include "../src/Goal.cpp"
