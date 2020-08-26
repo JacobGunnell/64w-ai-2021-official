@@ -39,7 +39,7 @@
 1590107546 source:c:\users\jacob\documents\prosprograms\64w-ai-rev0-2021\generation\src\mat.cpp
 	"mat.h"
 
-1598046061 source:c:\users\jacob\documents\prosprograms\64w-ai-rev0-2021\generation\main.cpp
+1598326028 source:c:\users\jacob\documents\prosprograms\64w-ai-rev0-2021\generation\main.cpp
 	<iostream>
 	<list>
 	<random>
@@ -48,6 +48,7 @@
 	<fstream>
 	<experimental/filesystem>
 	"AI.h"
+	"Monitor.h"
 	<chrono>
 	"CLI11.hpp"
 	"../src/Ball.cpp"
@@ -64,6 +65,7 @@
 	"../src/Brain.cpp"
 	"../src/SMP.cpp"
 	"../src/SP.cpp"
+	"Monitor.cpp"
 
 1590448369 source:c:\users\jacob\documents\prosprograms\64w-ai-rev0-2021\generation\src\match.cpp
 	"Match.h"
@@ -3434,4 +3436,11 @@
 
 1597123242 source:c:\users\jacob\documents\prosprograms\64w-ai-rev0-2021\src\sp.cpp
 	"SP.h"
+
+1598410765 c:\users\jacob\documents\prosprograms\64w-ai-rev0-2021\generation\monitor.h
+	<string>
+	<sstream>
+
+1598326040 c:\users\jacob\documents\prosprograms\64w-ai-rev0-2021\generation\monitor.cpp
+	"Monitor.h"
 

@@ -11,6 +11,7 @@ using namespace std;
 namespace fs = std::experimental::filesystem;
 
 #include "AI.h"
+#include "Monitor.h"
 
 #include <chrono>
 using namespace std::chrono;
@@ -24,7 +25,7 @@ int main(int argc, char **argv)
   CLI::App app{"64W-Generation, a program to breed a competent AI brain using an evolutional framework."};
   int POPULATION = 32, ELITE = 4, MUTATION_CHANCE = 20, GEN_MAX, RAND = 4;
   string OFPATH, IFPATH;
-  bool SEXUAL = false;
+  bool SEXUAL = false, MONITOR = false;
   app.add_option("-p", POPULATION, "Initial Population", true)->check([](const string &str){ if(ceil(log2(stoi(str))) != floor(log2(stoi(str)))) return str + string(" is not a power of 2"); else return string(); });
   app.add_option("-e", ELITE, "Elite Population", true)->check([](const string &str){ if(ceil(log2(stoi(str))) != floor(log2(stoi(str)))) return str + string(" is not a power of 2"); else return string(); });
   app.add_option("-m", MUTATION_CHANCE, "Mutation Chance", true)->check(CLI::Range(0, 100));
@@ -33,6 +34,7 @@ int main(int argc, char **argv)
   app.add_option("-o", OFPATH, "Directory to save to")->check(CLI::ExistingDirectory);
   app.add_option("-i", IFPATH, "Directory to read initial population from")->check(CLI::ExistingDirectory);
   app.add_flag("--sexual", SEXUAL, "Use sexual reproduction over asexual reproduction (not yet implemented)");
+  app.add_flag("--monitor", MONITOR, "Enables monitor program; requires output to be piped to monitor.py");
   CLI11_PARSE(app, argc, argv);
   if(ELITE >= POPULATION)
   {
@@ -96,7 +98,8 @@ int main(int argc, char **argv)
   {
     cout << "Gen " << gen + 1 << " in progress...";
     high_resolution_clock::time_point start = high_resolution_clock::now();
-    int totalPoints = 0, numPlays = 0;
+    Monitor dataMon;
+    dataMon.gen = gen;
 
     // Run elimination brackets (single elimination)
     while(cGen.size() > ELITE)
@@ -113,15 +116,19 @@ int main(int argc, char **argv)
           delete *blue;
           blue = make_reverse_iterator(cGen.erase(next(blue).base()));
           ++red;
+          dataMon.rw++;
         }
         else
         {
           delete *red;
           red = cGen.erase(red);
           ++blue;
+          dataMon.bw++;
         }
-        totalPoints += m.wp + m.lp;
-        numPlays += 2;
+
+        dataMon.wp += m.wp; // TODO: is there a better way to do this?
+        dataMon.lp += m.lp;
+        dataMon.numGames++;
       }
     }
 
@@ -176,12 +183,20 @@ int main(int argc, char **argv)
 
     high_resolution_clock::time_point stop = high_resolution_clock::now();
     milliseconds duration = duration_cast<milliseconds>(stop - start);
-    cout << " complete in " << duration.count() / 1000.0 << " seconds. Avg points scored in a match: " << (double)totalPoints/numPlays << endl;
+    dataMon.ms = duration.count();
+
+    if(MONITOR)
+      cout << dataMon.print();
+
+    cout << " complete in " << dataMon.ms / 1000.0 << " seconds" << endl;
   }
 
   high_resolution_clock::time_point overallStop = high_resolution_clock::now();
   milliseconds duration = duration_cast<milliseconds>(overallStop - overallStart);
   cout << GEN_MAX << " generation run complete in " << duration.count() / 1000.0 << " seconds." << endl;
+
+  if(MONITOR)
+    cout << Monitor::finish();
 
   return 0;
 }
@@ -195,7 +210,7 @@ template<typename T> void shuffle(list<T> &lst) // shuffle contents of a list
 }
 
 // tell the linker to link the implementation files without creating a library; probably will create one in the future and make it a PROS library template
-// TODO: add these source files to build targets
+// TODO: add these source files to "build targets"
 #include "../src/Ball.cpp"
 #include "../src/Container.cpp"
 #include "../src/GameObject.cpp"
@@ -211,5 +226,7 @@ template<typename T> void shuffle(list<T> &lst) // shuffle contents of a list
 #include "../src/Brain.cpp"
 #include "../src/SMP.cpp"
 #include "../src/SP.cpp"
+
+#include "Monitor.cpp"
 
 #endif // GENERATION_NO_ROBOT
